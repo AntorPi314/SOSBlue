@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Update Check</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .container { width: 100%; max-width: 400px; }
+        .icon { width: 60px; height: 60px; margin-bottom: 10px; }
+        
+        .status-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+            display: none; 
+        }
+
+        .title { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
+        .version { font-size: 14px; color: #666; margin-bottom: 15px; }
+        
+        .btn {
+            display: inline-block;
+            text-decoration: none;
+            background-color: #0D80E0;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+            width: 80%;
+            cursor: pointer;
+        }
+        
+        .release-notes {
+            text-align: left;
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #444;
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+        }
+
+        .update-avail .title { color: #d32f2f; }
+        .up-to-date .title { color: #388e3c; }
+        
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0D80E0;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <div id="loader" class="loader"></div>
+
+        <div id="updateView" class="status-card update-avail">
+            <img src="https://img.icons8.com/color/96/available-updates.png" class="icon" alt="Update">
+            <div class="title">New Update Available!</div>
+            <div class="version">Latest: <span id="latestVer"></span> (You: <span id="myVer"></span>)</div>
+            
+            <div class="release-notes">
+                <strong>What's New:</strong><br>
+                <span id="releaseBody">...</span>
+            </div>
+
+            <a id="downloadLink" href="#" class="btn" target="_blank">Download Update</a>
+        </div>
+
+        <div id="uptodateView" class="status-card up-to-date">
+            <img src="https://img.icons8.com/color/96/ok--v1.png" class="icon" alt="OK">
+            <div class="title">You are up to date</div>
+            <div class="version">Version: <span id="currentVerDisplay"></span></div>
+            <p style="font-size:13px; color:#777;">You have the latest version of SOSBlue installed.</p>
+        </div>
+
+        <div id="manualView" class="status-card">
+            <div class="title">Latest Release Info</div>
+            <div class="version">Latest on GitHub: <span id="manualLatestVer"></span></div>
+            <a id="manualLink" href="#" class="btn" target="_blank">View on GitHub</a>
+        </div>
+
+    </div>
+
+    <script>
+        function initUpdateCheck(currentVersion) {
+            console.log("Checking update for version: " + currentVersion);
+            fetchGitHubRelease(currentVersion);
+        }
+
+        window.onload = function() {
+            setTimeout(function() {
+                if (document.getElementById('loader').style.display !== 'none') {
+                   fetchGitHubRelease(null); 
+                }
+            }, 2000);
+        };
+
+        function fetchGitHubRelease(myVersion) {
+            const apiUrl = "https://api.github.com/repos/AntorPi314/SOSBlue/releases/latest";
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('loader').style.display = 'none';
+
+                    const latestVersion = data.tag_name;
+                    const downloadUrl = data.html_url; 
+                    let apkUrl = downloadUrl; 
+                    if(data.assets && data.assets.length > 0) {
+                        const apkAsset = data.assets.find(a => a.name.endsWith('.apk'));
+                        if(apkAsset) apkUrl = apkAsset.browser_download_url;
+                    }
+
+                    const bodyText = data.body ? data.body.replace(/\n/g, "<br>") : "Bug fixes and improvements.";
+                    const cleanLatest = latestVersion.replace(/^v/, '');
+                    const cleanCurrent = myVersion ? myVersion.replace(/^v/, '') : null;
+
+                    if (!cleanCurrent) {
+                        showManualView(latestVersion, downloadUrl);
+                    } else if (compareVersions(cleanLatest, cleanCurrent) > 0) {
+                        showUpdateView(cleanLatest, cleanCurrent, bodyText, apkUrl);
+                    } else {
+                        showUptodateView(cleanCurrent);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('loader').style.display = 'none';
+                    document.querySelector('.container').innerHTML = "<p>Could not connect to update server.</p>";
+                });
+        }
+
+        function showUpdateView(latest, current, notes, url) {
+            document.getElementById('updateView').style.display = 'block';
+            document.getElementById('latestVer').innerText = "v" + latest;
+            document.getElementById('myVer').innerText = "v" + current;
+            document.getElementById('releaseBody').innerHTML = notes;
+            document.getElementById('downloadLink').href = url;
+        }
+
+        function showUptodateView(current) {
+            document.getElementById('uptodateView').style.display = 'block';
+            document.getElementById('currentVerDisplay').innerText = "v" + current;
+        }
+
+        function showManualView(latest, url) {
+            document.getElementById('manualView').style.display = 'block';
+            document.getElementById('manualLatestVer').innerText = latest;
+            document.getElementById('manualLink').href = url;
+        }
+
+        function compareVersions(v1, v2) {
+            const v1Parts = v1.split('.').map(Number);
+            const v2Parts = v2.split('.').map(Number);
+            
+            for (let i = 0; i < Math.max(v1Parts.length, v2Parts.length); ++i) {
+                const val1 = v1Parts[i] || 0;
+                const val2 = v2Parts[i] || 0;
+                if (val1 > val2) return 1;
+                if (val1 < val2) return -1;
+            }
+            return 0;
+        }
+    </script>
+</body>
+</html>
