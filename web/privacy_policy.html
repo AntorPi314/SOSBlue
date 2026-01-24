@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - SOSBlue</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            color: #333333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+        }
+        p, li {
+            font-size: 15px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        .highlight {
+            background-color: #e8f4fc;
+            padding: 10px;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+        }
+        footer {
+            margin-top: 50px;
+            font-size: 12px;
+            text-align: center;
+            color: #777;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Privacy Policy</h1>
+    <p><strong>Last Updated:</strong> January 2026</p>
+
+    <p>This Privacy Policy describes how <strong>SOSBlue</strong> ("we", "us", or "our") handles your information when you use our mobile application. We are committed to protecting your privacy.</p>
+
+    <div class="highlight">
+        <strong>Key Point:</strong> SOSBlue is primarily an offline, peer-to-peer communication tool. We do not store your messages, files, or personal data on any external servers. All data remains locally on your device or is transmitted directly to nearby devices via Bluetooth/Wi-Fi.
+    </div>
+
+    <h2>1. Information We Collect and Use</h2>
+    
+    <h3>a. Location Data (Coarse and Fine Location)</h3>
+    <p>We request access to your device's location services. <strong>This is NOT used to track your physical location or share it with third parties.</strong></p>
+    <ul>
+        <li><strong>Why we need it:</strong> The Android operating system requires Location permissions to scan for nearby Bluetooth Low Energy (BLE) and Wi-Fi Direct devices. Without this permission, the app cannot find nearby friends to chat with.</li>
+        <li><strong>Background Usage:</strong> If you enable "Keep Service Alive" or background scanning features, the app may scan for devices while the app is in the background to alert you of nearby connections.</li>
+    </ul>
+
+    <h3>b. Storage and Media Files</h3>
+    <p>We request access to your device's storage (Read/Write permissions).</p>
+    <ul>
+        <li><strong>Why we need it:</strong> To allow you to save received files, photos, or videos from friends and to select files from your device to share with others via the offline network.</li>
+    </ul>
+
+    <h3>c. Bluetooth and Wi-Fi</h3>
+    <p>The core functionality of SOSBlue relies on Bluetooth and Wi-Fi hardware to establish peer-to-peer connections. We use these radios to transmit encrypted messages locally.</p>
+
+    <h2>2. Data Storage and Retention</h2>
+    <p>All messages, logs, and shared files are stored <strong>locally inside your device's internal database</strong> (SQLite/Room Database). We do not have a central cloud server. If you uninstall the app or clear the app data, your chat history and settings will be permanently deleted.</p>
+
+    <h2>3. Survival Bot & Automated Messages</h2>
+    <p>The app includes a "Survival Bot" or automated helper. Interactions with this bot are processed locally on your device. No query data is sent to the internet.</p>
+
+    <h2>4. Data Sharing and Third Parties</h2>
+    <p>Since SOSBlue operates offline:</p>
+    <ul>
+        <li>We do not sell your data to third parties.</li>
+        <li>We do not upload your chats to any cloud service.</li>
+        <li>Your data is only shared with the specific nearby devices you choose to connect with.</li>
+    </ul>
+
+    <h2>5. Security</h2>
+    <p>We implement standard encryption logic for data stored locally and during transmission between devices. However, please note that no method of electronic transmission is 100% secure. We recommend verifying the identity of the person you are connecting with.</p>
+
+    <h2>6. Children’s Privacy</h2>
+    <p>Our Service does not address anyone under the age of 13. We do not knowingly collect personally identifiable information from children under 13.</p>
+
+    <h2>7. Changes to This Privacy Policy</h2>
+    <p>We may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. We will notify you of any changes by posting the new Privacy Policy on this page.</p>
+
+    <h2>8. Contact Us</h2>
+    <p>If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us at:</p>
+    <p><strong>Email:</strong> sosblueapp@gmail.com<br>
+    <strong>Developer:</strong> Antor</p>
+
+    <footer>
+        &copy; 2026 SOSBlue. All rights reserved.
+    </footer>
+</div>
+
+<script>
+    // Optional: Simple script to ensure smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
