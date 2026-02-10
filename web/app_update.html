@@ -3,189 +3,273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App Update Check</title>
+    <title>SOSBlue Update</title>
     <style>
+        :root {
+            --primary: #0D80E0;
+            --success: #10B981;
+            --surface: #ffffff;
+            --bg: #F3F4F6;
+            --text-main: #1F2937;
+            --text-sec: #6B7280;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #ffffff;
-            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
             margin: 0;
             padding: 20px;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            text-align: center;
-        }
-        .container { width: 100%; max-width: 400px; }
-        .icon { width: 60px; height: 60px; margin-bottom: 10px; }
-        
-        .status-card {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            margin-bottom: 15px;
-            display: none; 
+            min-height: 100vh;
+            box-sizing: border-box;
         }
 
-        .title { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
-        .version { font-size: 14px; color: #666; margin-bottom: 15px; }
-        
-        .btn {
+        .container {
+            width: 100%;
+            max-width: 380px;
+            background: var(--surface);
+            padding: 30px 24px;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .icon-wrapper {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 40px;
+        }
+
+        .status-update { background: rgba(13, 128, 224, 0.1); color: var(--primary); }
+        .status-ok { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .status-check { background: #E5E7EB; color: #6B7280; }
+
+        h2 { margin: 0 0 8px; color: var(--text-main); font-size: 22px; }
+        p { margin: 0 0 24px; color: var(--text-sec); font-size: 14px; line-height: 1.5; }
+
+        .version-pill {
+            background: #F3F4F6;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
             display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .changelog-box {
+            text-align: left;
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            max-height: 180px;
+            overflow-y: auto;
+            font-size: 13px;
+            color: #4B5563;
+        }
+
+        .changelog-box strong { color: var(--text-main); display: block; margin-bottom: 8px; }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 600;
             text-decoration: none;
-            background-color: #0D80E0;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: bold;
-            margin-top: 10px;
-            width: 80%;
+            transition: transform 0.2s;
+            box-sizing: border-box;
+            border: none;
             cursor: pointer;
         }
-        
-        .release-notes {
-            text-align: left;
-            background: #fff;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 13px;
-            color: #444;
-            max-height: 150px;
-            overflow-y: auto;
-            border: 1px solid #eee;
+
+        .btn:active { transform: scale(0.98); }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(13, 128, 224, 0.3);
         }
 
-        .update-avail .title { color: #d32f2f; }
-        .up-to-date .title { color: #388e3c; }
-        
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-sec);
+            margin-top: 12px;
+            border: 1px solid #E5E7EB;
+        }
+
         .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #0D80E0;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #E5E7EB;
+            border-top-color: var(--primary);
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
+            animation: spin 1s infinite linear;
+            margin: 0 auto 20px;
         }
 
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        
-        <div id="loader" class="loader"></div>
+    <div class="container" id="mainContainer">
+        <div id="loadingView">
+            <div class="loader"></div>
+            <h2>Checking for Updates...</h2>
+            <p>Connecting to SOSBlue servers</p>
+        </div>
 
-        <div id="updateView" class="status-card update-avail">
-            <img src="https://img.icons8.com/color/96/available-updates.png" class="icon" alt="Update">
-            <div class="title">New Update Available!</div>
-            <div class="version">Latest: <span id="latestVer"></span> (You: <span id="myVer"></span>)</div>
+        <div id="updateView" class="hidden">
+            <div class="icon-wrapper status-update">🚀</div>
+            <h2>Update Available!</h2>
+            <div class="version-pill">New: v<span id="newVer"></span></div>
+            <p>A new version of SOSBlue is ready. Update now for the latest features.</p>
             
-            <div class="release-notes">
-                <strong>What's New:</strong><br>
-                <span id="releaseBody">...</span>
+            <div class="changelog-box">
+                <strong>What's New:</strong>
+                <div id="releaseNotes"></div>
             </div>
 
-            <a id="downloadLink" href="#" class="btn" target="_blank">Download Update</a>
+            <a id="btnDownload" href="#" class="btn btn-primary" target="_blank">Download Update</a>
         </div>
 
-        <div id="uptodateView" class="status-card up-to-date">
-            <img src="https://img.icons8.com/color/96/ok--v1.png" class="icon" alt="OK">
-            <div class="title">You are up to date</div>
-            <div class="version">Version: <span id="currentVerDisplay"></span></div>
-            <p style="font-size:13px; color:#777;">You have the latest version of SOSBlue installed.</p>
+        <div id="uptodateView" class="hidden">
+            <div class="icon-wrapper status-ok">✓</div>
+            <h2>You're Up to Date</h2>
+            <div class="version-pill">Version: v<span id="currentVer"></span></div>
+            <p>You have the latest version of SOSBlue installed.</p>
+            
+            <a id="btnGithubLink" href="#" class="btn btn-primary" style="background:#24292e;" target="_blank">View Release on GitHub</a>
+            <button onclick="location.reload()" class="btn btn-secondary">Check Again</button>
         </div>
 
-        <div id="manualView" class="status-card">
-            <div class="title">Latest Release Info</div>
-            <div class="version">Latest on GitHub: <span id="manualLatestVer"></span></div>
-            <a id="manualLink" href="#" class="btn" target="_blank">View on GitHub</a>
+        <div id="errorView" class="hidden">
+            <div class="icon-wrapper status-check">?</div>
+            <h2>Connection Failed</h2>
+            <p>Could not connect to update server. Please check your internet connection.</p>
+            <a id="btnManual" href="#" class="btn btn-primary" target="_blank">Open GitHub Manually</a>
+            <button onclick="location.reload()" class="btn btn-secondary">Retry</button>
         </div>
-
     </div>
 
     <script>
+        // Default repo info
+        const GITHUB_REPO = "AntorPi314/SOSBlue";
+        let appVersionGlobal = "0.0.0";
+
+        // Called from Android App
         function initUpdateCheck(currentVersion) {
-            console.log("Checking update for version: " + currentVersion);
-            fetchGitHubRelease(currentVersion);
+            appVersionGlobal = currentVersion || "0.0.0";
+            checkForUpdates();
         }
 
-        window.onload = function() {
-            setTimeout(function() {
-                if (document.getElementById('loader').style.display !== 'none') {
-                   fetchGitHubRelease(null); 
-                }
-            }, 2000);
-        };
+        // Fallback if Android doesn't inject in time
+        setTimeout(() => {
+            if (document.getElementById('loadingView').style.display !== 'none') {
+                checkForUpdates();
+            }
+        }, 1500);
 
-        function fetchGitHubRelease(myVersion) {
-            const apiUrl = "https://api.github.com/repos/AntorPi314/SOSBlue/releases/latest";
+        function checkForUpdates() {
+            // Cache busting with timestamp
+            const apiUrl = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest?t=${new Date().getTime()}`;
 
             fetch(apiUrl)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) throw new Error("Network response was not ok");
+                    return response.json();
+                })
                 .then(data => {
-                    document.getElementById('loader').style.display = 'none';
-
-                    const latestVersion = data.tag_name;
-                    const downloadUrl = data.html_url; 
-                    let apkUrl = downloadUrl; 
-                    if(data.assets && data.assets.length > 0) {
-                        const apkAsset = data.assets.find(a => a.name.endsWith('.apk'));
-                        if(apkAsset) apkUrl = apkAsset.browser_download_url;
-                    }
-
-                    const bodyText = data.body ? data.body.replace(/\n/g, "<br>") : "Bug fixes and improvements.";
-                    const cleanLatest = latestVersion.replace(/^v/, '');
-                    const cleanCurrent = myVersion ? myVersion.replace(/^v/, '') : null;
-
-                    if (!cleanCurrent) {
-                        showManualView(latestVersion, downloadUrl);
-                    } else if (compareVersions(cleanLatest, cleanCurrent) > 0) {
-                        showUpdateView(cleanLatest, cleanCurrent, bodyText, apkUrl);
-                    } else {
-                        showUptodateView(cleanCurrent);
-                    }
+                    handleResponse(data);
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('loader').style.display = 'none';
-                    document.querySelector('.container').innerHTML = "<p>Could not connect to update server.</p>";
+                    console.error("Fetch Error:", error);
+                    showError();
                 });
         }
 
-        function showUpdateView(latest, current, notes, url) {
-            document.getElementById('updateView').style.display = 'block';
-            document.getElementById('latestVer').innerText = "v" + latest;
-            document.getElementById('myVer').innerText = "v" + current;
-            document.getElementById('releaseBody').innerHTML = notes;
-            document.getElementById('downloadLink').href = url;
-        }
-
-        function showUptodateView(current) {
-            document.getElementById('uptodateView').style.display = 'block';
-            document.getElementById('currentVerDisplay').innerText = "v" + current;
-        }
-
-        function showManualView(latest, url) {
-            document.getElementById('manualView').style.display = 'block';
-            document.getElementById('manualLatestVer').innerText = latest;
-            document.getElementById('manualLink').href = url;
-        }
-
-        function compareVersions(v1, v2) {
-            const v1Parts = v1.split('.').map(Number);
-            const v2Parts = v2.split('.').map(Number);
+        function handleResponse(data) {
+            const latestTag = data.tag_name.replace(/^v/, ''); // Remove 'v' prefix
+            const currentVer = appVersionGlobal.replace(/^v/, '');
             
-            for (let i = 0; i < Math.max(v1Parts.length, v2Parts.length); ++i) {
-                const val1 = v1Parts[i] || 0;
-                const val2 = v2Parts[i] || 0;
-                if (val1 > val2) return 1;
-                if (val1 < val2) return -1;
+            const downloadUrl = data.html_url;
+            // Try to find direct APK link
+            let apkUrl = downloadUrl;
+            if(data.assets && data.assets.length > 0) {
+                const apk = data.assets.find(a => a.name.endsWith('.apk'));
+                if(apk) apkUrl = apk.browser_download_url;
             }
-            return 0;
+
+            const notes = data.body 
+                ? data.body.replace(/\n/g, '<br>').replace(/###/g, '') 
+                : "Performance improvements and bug fixes.";
+
+            hideAll();
+
+            if (isNewerVersion(latestTag, currentVer)) {
+                // Update Available
+                const el = document.getElementById('updateView');
+                document.getElementById('newVer').textContent = latestTag;
+                document.getElementById('releaseNotes').innerHTML = notes;
+                document.getElementById('btnDownload').href = apkUrl;
+                el.classList.remove('hidden');
+            } else {
+                // Up to Date
+                const el = document.getElementById('uptodateView');
+                document.getElementById('currentVer').textContent = currentVer;
+                // Even if updated, show link to release
+                document.getElementById('btnGithubLink').href = downloadUrl; 
+                el.classList.remove('hidden');
+            }
+        }
+
+        function isNewerVersion(latest, current) {
+            if (!current || current === "0.0.0") return true; // Assume update if current unavailable
+            
+            const v1 = latest.split('.').map(Number);
+            const v2 = current.split('.').map(Number);
+            
+            for (let i = 0; i < Math.max(v1.length, v2.length); i++) {
+                const num1 = v1[i] || 0;
+                const num2 = v2[i] || 0;
+                if (num1 > num2) return true;
+                if (num1 < num2) return false;
+            }
+            return false;
+        }
+
+        function showError() {
+            hideAll();
+            document.getElementById('errorView').classList.remove('hidden');
+            document.getElementById('btnManual').href = `https://github.com/${GITHUB_REPO}/releases`;
+        }
+
+        function hideAll() {
+            document.getElementById('loadingView').classList.add('hidden');
+            document.getElementById('updateView').classList.add('hidden');
+            document.getElementById('uptodateView').classList.add('hidden');
+            document.getElementById('errorView').classList.add('hidden');
         }
     </script>
 </body>

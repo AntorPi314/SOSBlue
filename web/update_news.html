@@ -3,192 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>News & Updates</title>
+    <title>SOSBlue News</title>
     <style>
-        /* --- General Styles --- */
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f4f6f9;
+            background-color: #F8F9FE;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             color: #333;
         }
 
+        /* Hero Header */
+        .hero {
+            background: linear-gradient(135deg, #0D80E0 0%, #065091 100%);
+            color: white;
+            padding: 30px 20px 40px;
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: 0 10px 30px rgba(13, 128, 224, 0.2);
+        }
+
+        .hero h1 { margin: 0; font-size: 26px; letter-spacing: 0.5px; }
+        .hero p { margin: 8px 0 0; opacity: 0.9; font-size: 14px; }
+
         .container {
             max-width: 600px;
-            margin: 0 auto;
+            margin: -25px auto 0;
+            padding: 0 16px 30px;
         }
 
-        /* --- Header Section --- */
-        .header {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .header h1 {
-            font-size: 24px;
-            margin: 0;
-            color: #1a1a1a;
-            font-weight: 700;
-        }
-        .header p {
-            font-size: 14px;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        /* --- News Card Styles --- */
-        .news-card {
-            background: #ffffff;
+        /* News Card */
+        .card {
+            background: white;
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            transition: transform 0.2s, box-shadow 0.2s;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid #f0f0f0;
-            opacity: 0; /* Animation Start State */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            border: 1px solid rgba(0,0,0,0.02);
+            opacity: 0;
             transform: translateY(20px);
-            animation: slideUp 0.5s forwards;
+            animation: fadeSlideUp 0.6s ease-out forwards;
         }
 
-        .news-card:active {
-            transform: scale(0.98);
+        @keyframes fadeSlideUp {
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- Featured Card (Highlights) --- */
-        .news-card.featured {
-            background: linear-gradient(135deg, #0D80E0 0%, #0860A8 100%);
-            color: white;
-            border: none;
+        /* Featured Card */
+        .card.featured {
+            border: 2px solid #0D80E0;
+            background: #F0F7FF;
         }
-        .news-card.featured .news-date { color: rgba(255,255,255,0.8); }
-        .news-card.featured .news-desc { color: rgba(255,255,255,0.95); }
-        .news-card.featured h2 { color: white; }
 
-        /* --- Typography --- */
-        .card-top {
+        .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
-        .badge {
-            font-size: 10px;
-            font-weight: bold;
+        .tag {
+            font-size: 11px;
+            font-weight: 700;
             text-transform: uppercase;
-            padding: 4px 8px;
-            border-radius: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
             letter-spacing: 0.5px;
         }
 
-        /* Badge Colors */
-        .badge.new { background: #e3f2fd; color: #0D80E0; }
-        .badge.hot { background: #ffebee; color: #d32f2f; }
-        .badge.info { background: #f3f3f3; color: #666; }
+        .tag.new { background: #0D80E0; color: white; }
+        .tag.hot { background: #FF5252; color: white; }
+        .tag.ai { background: #6C63FF; color: white; }
+        .tag.security { background: #10B981; color: white; }
+
+        .date { font-size: 12px; color: #888; }
+
+        h2 { font-size: 18px; margin: 0 0 8px; color: #1F2937; }
         
-        /* Featured Badge override */
-        .featured .badge { background: rgba(255,255,255,0.2); color: white; }
-
-        .news-date {
-            font-size: 12px;
-            color: #999;
-        }
-
-        h2 {
-            font-size: 18px;
-            margin: 0 0 8px 0;
-            line-height: 1.3;
-        }
-
-        .news-desc {
+        .desc {
             font-size: 14px;
-            line-height: 1.5;
-            color: #555;
+            line-height: 1.6;
+            color: #4B5563;
             margin: 0;
         }
 
-        /* --- Link Button --- */
-        .action-link {
-            display: inline-block;
-            margin-top: 12px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #0D80E0;
-            text-decoration: none;
+        .icon-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
         }
-        .featured .action-link { color: #fff; text-decoration: underline; }
+        
+        .feature-icon {
+            font-size: 24px;
+            background: white;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
 
-        /* --- Animation --- */
-        @keyframes slideUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* Staggered Animation Delays */
-        .news-card:nth-child(1) { animation-delay: 0.1s; }
-        .news-card:nth-child(2) { animation-delay: 0.2s; }
-        .news-card:nth-child(3) { animation-delay: 0.3s; }
-        
         .footer {
             text-align: center;
             font-size: 12px;
-            color: #aaa;
+            color: #9CA3AF;
             margin-top: 30px;
-            padding-bottom: 10px;
         }
+
+        /* Stagger Animation */
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+
     </style>
 </head>
 <body>
 
+    <div class="hero">
+        <h1>SOSBlue Updates</h1>
+        <p>Discover the latest survival features</p>
+    </div>
+
     <div class="container">
-        
-        <div class="header">
-            <h1>What's New</h1>
-            <p>Latest updates & announcements from SOSBlue</p>
+
+        <div class="card featured">
+            <div class="card-header">
+                <span class="tag ai">New Feature</span>
+                <span class="date">v2.4.8</span>
+            </div>
+            <div class="icon-box">
+                <div class="feature-icon">🤖</div>
+                <div>
+                    <h2>Survival Bot Activated</h2>
+                    <p class="desc">
+                        Offline AI assistant is now live! Ask about <strong>Fire, Flood, or Earthquake</strong> safety even without internet. The bot replies instantly from local database.
+                    </p>
+                </div>
+            </div>
         </div>
 
-        <div class="news-card featured">
-            <div class="card-top">
-                <span class="badge">Major Update</span>
-                <span class="news-date">Jan 24, 2026</span>
+        <div class="card">
+            <div class="card-header">
+                <span class="tag new">Core Tech</span>
+                <span class="date">Network</span>
             </div>
-            <h2>🚀 Video Calling Feature is Live!</h2>
-            <p class="news-desc">
-                We are excited to announce that high-quality video calling is now available. 
-                Update your app to the latest version to start connecting face-to-face.
-            </p>
-            <a href="https://github.com/AntorPi314/SOSBlue/releases" target="_blank" class="action-link">Update Now →</a>
+            <div class="icon-box">
+                <div class="feature-icon">📡</div>
+                <div>
+                    <h2>Mesh Networking Upgrade</h2>
+                    <p class="desc">
+                        Messages now hop between devices to extend range. If user A is far, user B acts as a bridge to deliver your message seamlessly.
+                    </p>
+                </div>
+            </div>
         </div>
 
-        <div class="news-card">
-            <div class="card-top">
-                <span class="badge new">New</span>
-                <span class="news-date">Jan 20, 2026</span>
+        <div class="card">
+            <div class="card-header">
+                <span class="tag security">Privacy</span>
+                <span class="date">Security</span>
             </div>
-            <h2>🔒 Enhanced Privacy Settings</h2>
-            <p class="news-desc">
-                You can now control who sees your "Last Seen" and profile picture. 
-                Check Settings > Privacy to configure.
-            </p>
+            <div class="icon-box">
+                <div class="feature-icon">🔒</div>
+                <div>
+                    <h2>Encrypted QR Identity</h2>
+                    <p class="desc">
+                        Share your contact details securely. Your User ID and Name are now encrypted inside the QR code to prevent tracking.
+                    </p>
+                </div>
+            </div>
         </div>
 
-        <div class="news-card">
-            <div class="card-top">
-                <span class="badge info">Notice</span>
-                <span class="news-date">Jan 15, 2026</span>
+        <div class="card">
+            <div class="card-header">
+                <span class="tag hot">Useful</span>
+                <span class="date">Tools</span>
             </div>
-            <h2>Server Maintenance Complete</h2>
-            <p class="news-desc">
-                Scheduled maintenance has been completed successfully. Messaging speed has been improved by 20%.
-            </p>
+            <div class="icon-box">
+                <div class="feature-icon">📂</div>
+                <div>
+                    <h2>Offline File Sharing</h2>
+                    <p class="desc">
+                        Share large photos and videos instantly via Wi-Fi hotspot. No data usage, high-speed transfer supported.
+                    </p>
+                </div>
+            </div>
         </div>
 
         <div class="footer">
-            © 2026 SOSBlue Team
+            © 2026 SOSBlue Community
         </div>
 
     </div>
