@@ -3,6 +3,15 @@
 # SOSBlue (The Ultimate Offline Communication Tool)
 
 
+<p align="center">
+  <a href="https://antorpi314.github.io/SOSBlue/">
+    <img src="https://img.shields.io/badge/Go%20to%20Download%20Page-0D1117?style=for-the-badge&logo=google-chrome&logoColor=white" />
+  </a>
+</p>
+
+
+
+
 ### YouTube Channel 
 https://www.youtube.com/@SOS-Blue
 
