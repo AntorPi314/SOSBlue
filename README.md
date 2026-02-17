@@ -10,6 +10,8 @@
 </p>
 
 
+### Project Documentation
+[SOSBlue - Project Documentation v2.5](https://drive.google.com/file/d/1r3VXO5Lt4AqMJY6I3F7kNxjhcnrVzXyf/view?usp=sharing)
 
 
 ### YouTube Channel 
