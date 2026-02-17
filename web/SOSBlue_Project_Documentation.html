@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOSBlue — Project Documentation v2.5</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{--blue:#0D80E0;--blue-dark:#0a5db8;--cyan:#06b6d4;--bg:#ffffff;--bg2:#f8fafc;--bg3:#f1f5f9;--text:#1e293b;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--green:#10b981;--red:#ef4444;--orange:#f59e0b;}
+  body{font-family:'Inter',system-ui,-apple-system,sans-serif;color:var(--text);line-height:1.7;background:var(--bg);}
+  .container{max-width:900px;margin:0 auto;padding:40px 50px;}
+
+  /* Cover Page */
+  .cover{text-align:center;padding:120px 40px 80px;page-break-after:always;min-height:90vh;display:flex;flex-direction:column;justify-content:center;align-items:center;}
+  .cover-logo{width:90px;height:90px;border-radius:22px;display:flex;align-items:center;justify-content:center;margin:0 auto 30px;box-shadow:0 10px 40px rgba(13,128,224,0.25);overflow:hidden;}
+  .cover-logo img{width:100%;height:100%;object-fit:cover;border-radius:22px;}
+  .cover h1{font-size:2.6rem;font-weight:800;color:var(--text);margin-bottom:8px;letter-spacing:-0.5px;}
+  .cover h1 span{background:linear-gradient(135deg,var(--blue),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .cover .subtitle{font-size:1.15rem;color:var(--text2);margin-bottom:40px;font-weight:400;}
+  .cover .meta{display:inline-block;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 40px;margin-top:10px;}
+  .cover .meta p{font-size:0.9rem;color:var(--text2);margin:4px 0;}
+  .cover .meta strong{color:var(--text);font-weight:600;}
+  .cover .badge{display:inline-block;background:linear-gradient(135deg,var(--blue),var(--blue-dark));color:#fff;padding:6px 20px;border-radius:20px;font-size:0.8rem;font-weight:600;margin-bottom:30px;letter-spacing:0.5px;}
+  .cover .confidential{margin-top:40px;font-size:0.8rem;color:var(--text3);font-style:italic;}
+
+  /* TOC */
+  .toc{page-break-after:always;padding:50px 0;}
+  .toc h2{font-size:1.5rem;color:var(--blue);margin-bottom:25px;font-weight:700;border-bottom:3px solid var(--blue);padding-bottom:10px;display:inline-block;}
+  .toc ol{list-style:none;counter-reset:toc;}
+  .toc ol li{counter-increment:toc;padding:10px 0;border-bottom:1px solid var(--border);font-size:0.95rem;}
+  .toc ol li::before{content:counter(toc) ".";font-weight:700;color:var(--blue);margin-right:12px;min-width:28px;display:inline-block;}
+  .toc ol li a{color:var(--text);text-decoration:none;font-weight:500;}
+  .toc ol li a:hover{color:var(--blue);}
+
+  /* Section Headers */
+  .section{page-break-inside:avoid;margin-bottom:35px;}
+  h2.sec{font-size:1.5rem;font-weight:700;color:var(--blue);margin:50px 0 20px;padding-bottom:10px;border-bottom:2px solid var(--border);page-break-after:avoid;}
+  h2.sec .num{background:var(--blue);color:#fff;width:32px;height:32px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:0.85rem;margin-right:10px;vertical-align:middle;}
+  h3{font-size:1.1rem;font-weight:600;color:var(--text);margin:25px 0 12px;padding-left:12px;border-left:3px solid var(--blue);}
+  h4{font-size:0.95rem;font-weight:600;color:var(--text2);margin:18px 0 8px;}
+  p{margin-bottom:12px;color:var(--text2);font-size:0.92rem;}
+  strong{color:var(--text);}
+
+  /* Tables */
+  table{width:100%;border-collapse:collapse;margin:15px 0 25px;font-size:0.85rem;}
+  thead th{background:var(--bg3);color:var(--text);font-weight:600;text-align:left;padding:10px 14px;border:1px solid var(--border);}
+  tbody td{padding:9px 14px;border:1px solid var(--border);color:var(--text2);vertical-align:top;}
+  tbody tr:nth-child(even){background:var(--bg2);}
+  .emoji{font-size:1em;}
+
+  /* Feature Check Marks */
+  .yes{color:var(--blue);font-weight:700;text-align:center;}
+  .no{color:var(--red);font-weight:700;text-align:center;}
+  .partial{color:var(--orange);font-weight:700;text-align:center;}
+
+  /* Code/Architecture Boxes */
+  .arch-box{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin:18px 0;font-family:'Courier New',monospace;font-size:0.78rem;line-height:1.6;white-space:pre;overflow-x:auto;color:var(--text);}
+
+  /* Callout Boxes */
+  .callout{border-radius:8px;padding:14px 18px;margin:15px 0;font-size:0.88rem;}
+  .callout-blue{background:#eff6ff;border-left:4px solid var(--blue);color:#1e40af;}
+  .callout-green{background:#f0fdf4;border-left:4px solid var(--green);color:#166534;}
+  .callout-orange{background:#fffbeb;border-left:4px solid var(--orange);color:#92400e;}
+
+  /* Scenario Boxes */
+  .scenario{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin:12px 0;}
+  .scenario h4{margin:0 0 6px;color:var(--blue);border:none;padding:0;}
+  .scenario p{margin:0;font-size:0.88rem;font-style:italic;color:var(--text2);}
+
+  /* Positioning Chart */
+  .chart{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:30px;margin:20px 0;text-align:center;}
+  .chart-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:0;width:400px;height:300px;margin:0 auto;position:relative;border-left:2px solid var(--text3);border-bottom:2px solid var(--text3);}
+  .chart-dot{position:absolute;width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.2);}
+  .chart-label{font-size:0.75rem;font-weight:600;position:absolute;white-space:nowrap;}
+
+  /* UVP Box */
+  .uvp{background:linear-gradient(135deg,#eff6ff,#f0f9ff);border:2px solid var(--blue);border-radius:12px;padding:20px 24px;margin:20px 0;}
+  .uvp h4{color:var(--blue);margin:0 0 10px;font-size:1rem;border:none;padding:0;}
+  .uvp ul{list-style:none;padding:0;}
+  .uvp li{padding:5px 0;font-size:0.88rem;color:var(--text2);}
+  .uvp li::before{content:"✦ ";color:var(--blue);font-weight:700;}
+
+  /* Footer */
+  .doc-footer{text-align:center;margin-top:60px;padding-top:25px;border-top:2px solid var(--border);color:var(--text3);font-size:0.8rem;}
+  .doc-footer p{color:var(--text3);}
+
+  /* Print */
+  @media print{
+    body{font-size:11pt;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .container{padding:20px 30px;}
+    .cover{min-height:auto;padding:80px 30px 60px;}
+    h2.sec{page-break-after:avoid;}
+    .section{page-break-inside:avoid;}
+    table{page-break-inside:auto;}
+    tr{page-break-inside:avoid;page-break-after:auto;}
+    .arch-box{page-break-inside:avoid;}
+    .no-print{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ==================== COVER PAGE ==================== -->
+<div class="cover">
+  <div class="cover-logo">
+    <img src="https://raw.githubusercontent.com/AntorPi314/SOSBlue/main/web/images/sosblue_icon.png" alt="SOSBlue Logo">
+  </div>
+  <div class="badge">OFFICIAL PROJECT DOCUMENTATION</div>
+  <h1><span>SOSBlue</span></h1>
+  <p class="subtitle">Offline Mesh Communication Platform for Android</p>
+  <div class="meta">
+    <p><strong>Version:</strong> 2.5.1</p>
+    <p><strong>Date:</strong> February 2026</p>
+    <p><strong>Author:</strong> Antor Hawlader</p>
+    <p><strong>Contact:</strong> sosblueapp@gmail.com</p>
+  </div>
+  <p class="confidential">Confidential — For Internal & Stakeholder Review Only</p>
+</div>
+
+<!-- ==================== TABLE OF CONTENTS ==================== -->
+<div class="toc">
+  <h2>Table of Contents</h2>
+  <ol>
+    <li><a href="#s1">Executive Summary</a></li>
+    <li><a href="#s2">Problem Statement</a></li>
+    <li><a href="#s3">Product Overview</a></li>
+    <li><a href="#s4">Key Features</a></li>
+    <li><a href="#s5">System Architecture</a></li>
+    <li><a href="#s6">Technology Stack</a></li>
+    <li><a href="#s7">Security Architecture</a></li>
+    <li><a href="#s8">Communication Protocols</a></li>
+    <li><a href="#s9">Data Management</a></li>
+    <li><a href="#s10">Competitor Analysis</a></li>
+    <li><a href="#s11">Target Audience & Use Cases</a></li>
+    <li><a href="#s12">Privacy & Legal Compliance</a></li>
+    <li><a href="#s13">Distribution & Deployment</a></li>
+    <li><a href="#s14">Product Roadmap</a></li>
+    <li><a href="#s15">Contact Information</a></li>
+  </ol>
+</div>
+
+<!-- ==================== 1. EXECUTIVE SUMMARY ==================== -->
+<div class="section" id="s1">
+  <h2 class="sec"><span class="num">1</span> Executive Summary</h2>
+  <p><strong>SOSBlue</strong> is a native Android application enabling <strong>secure, offline, peer-to-peer communication</strong> using <strong>Bluetooth Low Energy (BLE)</strong> and <strong>Local Wi-Fi</strong>. It creates a decentralized mesh network allowing users to exchange text messages, share files, and communicate in groups — all <strong>without internet, cellular service, or SIM cards</strong>.</p>
+  <p>In disaster scenarios, network blackouts, remote areas, or large gatherings where traditional infrastructure fails, SOSBlue provides a reliable fallback. When connectivity is available, the app extends its reach through a <strong>Secure Cloud Relay</strong>.</p>
+  <div class="callout callout-blue"><strong>Key Identity:</strong> Version 2.5.1 &nbsp;|&nbsp; Package: <code>com.antor.sosblue</code> &nbsp;|&nbsp; Min Android 8.0 (API 26) &nbsp;|&nbsp; Target SDK: Android 15 (API 35)</div>
+</div>
+
+<!-- ==================== 2. PROBLEM STATEMENT ==================== -->
+<div class="section" id="s2">
+  <h2 class="sec"><span class="num">2</span> Problem Statement</h2>
+  <p>Traditional communication (calls, SMS, internet messaging) all depend on <strong>network infrastructure</strong>. When it fails — during disasters, in remote areas, during unrest, or at overcrowded venues — people lose the ability to communicate.</p>
+  <table>
+    <thead><tr><th>Challenge</th><th>Impact</th><th>SOSBlue Solution</th></tr></thead>
+    <tbody>
+      <tr><td>Natural disasters destroy cell towers</td><td>Complete communication blackout</td><td>BLE/Wi-Fi mesh works without infrastructure</td></tr>
+      <tr><td>Remote areas lack coverage</td><td>Isolation of travelers & workers</td><td>Device-to-device requires zero infrastructure</td></tr>
+      <tr><td>Network congestion at events</td><td>Messages fail to deliver</td><td>Local mesh bypasses congested networks</td></tr>
+      <tr><td>Privacy concerns with centralized services</td><td>Data harvested by corporations</td><td>All data stored locally; no central server</td></tr>
+      <tr><td>Device pairing friction</td><td>Complex setup deters users</td><td>BLE advertising eliminates pairing</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ==================== 3. PRODUCT OVERVIEW ==================== -->
+<div class="section" id="s3">
+  <h2 class="sec"><span class="num">3</span> Product Overview</h2>
+  <h3>3.1 Offline Layer (Primary)</h3>
+  <p><strong>Bluetooth Low Energy (BLE):</strong> Low-power communication with a device-to-device range of <strong>15–100+ meters per hop</strong>. Messages automatically relay through intermediate devices (mesh network) to extend effective range far beyond a single hop.</p>
+  <p><strong>Local Wi-Fi Network:</strong> High-bandwidth connection for file sharing and chat when devices are connected to the same Wi-Fi router or Hotspot.</p>
+  <h3>3.2 Online Layer (Optional)</h3>
+  <p><strong>Secure Cloud Relay:</strong> When internet is available, messages are batched and relayed via secure cloud servers within <strong>~30 seconds</strong> to reach distant users anywhere in the world.</p>
+  <p><strong>Cloud Server:</strong> Handled by a robust backend architecture ensuring efficient message routing and delivery.</p>
+  <h3>3.3 Hybrid Relay — No Message Lost</h3>
+  <p>SOSBlue ensures <strong>zero message loss</strong> through its hybrid architecture. If a device is offline, encrypted messages are carried by nearby devices until they reach someone with internet access, who then relays them to the cloud. The message is queued and delivered as soon as the recipient comes online.</p>
+</div>
+
+<!-- ==================== 4. KEY FEATURES ==================== -->
+<div class="section" id="s4">
+  <h2 class="sec"><span class="num">4</span> Key Features</h2>
+
+  <h3>4.1 Core Communication</h3>
+  <table>
+    <thead><tr><th>Feature</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Offline Text Messaging</strong></td><td>Send/receive text via BLE without internet or cellular connection</td></tr>
+      <tr><td><strong>Group Messaging</strong></td><td>Create and join groups using unique group IDs for multi-party conversations</td></tr>
+      <tr><td><strong>Friend-to-Friend Chat</strong></td><td>Private encrypted conversations with specific contacts</td></tr>
+      <tr><td><strong>Message Mesh Relay</strong></td><td>Messages auto-hop through intermediate devices, extending range</td></tr>
+      <tr><td><strong>Broadcast Messaging</strong></td><td>Send announcements to all nearby SOSBlue users</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.2 File Sharing &amp; Media</h3>
+  <table>
+    <thead><tr><th>Feature</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Local Wi-Fi File Transfer</strong></td><td>Share files, photos, and videos over high-speed Local Wi-Fi (Same Network)</td></tr>
+      <tr><td><strong>JSON Power Links</strong></td><td>Send rich media/formatted layouts via <code>g//</code> links. Host a JSON file externally and share the link to auto-load text, images, and videos.</td></tr>
+      <tr><td><strong>Media via Links</strong></td><td>Share images and videos via links; videos stream directly in local players (e.g., MX Player)</td></tr>
+      <tr><td><strong>Photo/Video Gallery</strong></td><td>Built-in media viewer for received content</td></tr>
+      <tr><td><strong>Offline Video Streaming</strong></td><td>Friends can stream videos directly from your device without downloading</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.3 User Experience</h3>
+  <table>
+    <thead><tr><th>Feature</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><strong>QR Code Contact Exchange</strong></td><td>Add friends by scanning/displaying QR codes; generate and scan custom codes</td></tr>
+      <tr><td><strong>Custom Nicknames</strong></td><td>Assign recognizable names to sender IDs</td></tr>
+      <tr><td><strong>Chat History</strong></td><td>Persistent local storage with timestamps</td></tr>
+      <tr><td><strong>Message Acknowledgment</strong></td><td>Delivery and read receipt tracking</td></tr>
+      <tr><td><strong>Local Wi-Fi Chat</strong></td><td>High-speed chat over same Wi-Fi network (Disabled by default; enable for speed)</td></tr>
+      <tr><td><strong>Swipe to Reply</strong></td><td>Intuitive gesture to reply to specific messages</td></tr>
+      <tr><td><strong>Message Search</strong></td><td>Quickly find past conversations with local search</td></tr>
+      <tr><td><strong>Support Developer</strong></td><td>In-app donation support</td></tr>
+      <tr><td><strong>Notepad</strong></td><td>In-app notes</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.4 Safety &amp; Emergency</h3>
+  <table>
+    <thead><tr><th>Feature</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Survival Bot</strong></td><td>Offline AI assistant providing guidance for earthquake, fire, flood emergencies</td></tr>
+      <tr><td><strong>Foreground Service</strong></td><td>Background BLE scanning ensures no messages missed</td></tr>
+      <tr><td><strong>User Blocking</strong></td><td>Block unwanted users from contacting you</td></tr>
+      <tr><td><strong>Content Filtering</strong></td><td>Configurable incoming message filters</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.5 System & Performance</h3>
+  <table>
+    <thead><tr><th>Feature</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Smart Battery Management</strong></td><td>Optimized for continuous background mesh operation with minimal drain</td></tr>
+      <tr><td><strong>Automatic Updates</strong></td><td>In-app check for latest security patches and features</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.6 Online Extension</h3>
+  <table>
+    <thead><tr><th>Feature</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Cloud Message Relay</strong></td><td>Messages batched (~30s) and relayed via FCM to distant users — no message lost</td></tr>
+      <tr><td><strong>Push Notifications</strong></td><td>Background notifications for new messages</td></tr>
+      <tr><td><strong>Remote Configuration</strong></td><td>Dynamic feature flags and settings via Firebase Remote Config</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ==================== 5. SYSTEM ARCHITECTURE ==================== -->
+<div class="section" id="s5">
+  <h2 class="sec"><span class="num">5</span> System Architecture</h2>
+  <h3>5.1 High-Level Architecture</h3>
+  <div style="text-align:center; margin: 20px 0;">
+    <img src="https://raw.githubusercontent.com/AntorPi314/SOSBlue/main/web/images/High_Level_Architecture.png" alt="High Level Architecture" style="max-width:100%; border-radius:10px; border:1px solid var(--border);">
+  </div>
+
+  <h3>5.2 Module Breakdown</h3>
+  <table>
+    <thead><tr><th>Module</th><th>Responsibility</th><th>Key Classes</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Presentation</strong></td><td>UI rendering, user interaction</td><td>MainActivity, ChatAdapter, SettingsActivity</td></tr>
+      <tr><td><strong>Messaging</strong></td><td>Processing, formatting, filtering</td><td>MessageProcessor, MessageHelper, ExtremeFilter</td></tr>
+      <tr><td><strong>Communication</strong></td><td>BLE, Wi-Fi Direct, FCM</td><td>BleMessagingService, WifiMessagingService</td></tr>
+      <tr><td><strong>Security</strong></td><td>Encryption & key management</td><td>CryptoUtils</td></tr>
+      <tr><td><strong>Database</strong></td><td>Local persistence</td><td>AppDatabase, MessageDao, FriendDao, GroupDao</td></tr>
+      <tr><td><strong>Utility</strong></td><td>QR, images, files</td><td>QRCodeActivity, ImageConverter, FilePrefsManager</td></tr>
+      <tr><td><strong>AI/Bot</strong></td><td>Offline survival assistance</td><td>SurvivalBotEngine</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.3 Service Architecture</h3>
+  <table>
+    <thead><tr><th>Service</th><th>Type</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>BleMessagingService</td><td>location | connectedDevice</td><td>BLE scanning, advertising, GATT server</td></tr>
+      <tr><td>WifiMessagingService</td><td>connectedDevice</td><td>Wi-Fi Direct peer discovery & file transfer</td></tr>
+      <tr><td>FileShareService</td><td>dataSync</td><td>Background file sharing</td></tr>
+      <tr><td>FCM_Management</td><td>Firebase Messaging</td><td>Push notification reception</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ==================== 6. TECHNOLOGY STACK ==================== -->
+<div class="section" id="s6">
+  <h2 class="sec"><span class="num">6</span> Technology Stack</h2>
+  <h3>6.1 Platform & Build</h3>
+  <table>
+    <thead><tr><th>Component</th><th>Technology</th></tr></thead>
+    <tbody>
+      <tr><td>Platform</td><td>Native Android</td></tr>
+      <tr><td>Language</td><td>Java 11</td></tr>
+      <tr><td>Build System</td><td>Gradle (Groovy DSL)</td></tr>
+      <tr><td>Min SDK</td><td>API 26 (Android 8.0 Oreo)</td></tr>
+      <tr><td>Target SDK</td><td>API 35 (Android 15)</td></tr>
+      <tr><td>Compile SDK</td><td>API 36</td></tr>
+    </tbody>
+  </table>
+
+  <h3>6.2 Core Libraries</h3>
+  <table>
+    <thead><tr><th>Category</th><th>Library</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>UI</td><td>AndroidX AppCompat, Fragment, ViewPager2</td><td>Material Design components</td></tr>
+      <tr><td>Database</td><td>Room (SQLite)</td><td>Structured local persistence</td></tr>
+      <tr><td>Serialization</td><td>Gson</td><td>JSON for BLE messages</td></tr>
+      <tr><td>QR Codes</td><td>ZXing (Core + Embedded)</td><td>QR generation & scanning</td></tr>
+      <tr><td>Lifecycle</td><td>AndroidX LiveData</td><td>Reactive UI updates</td></tr>
+      <tr><td>Background</td><td>AndroidX WorkManager</td><td>Scheduled operations</td></tr>
+    </tbody>
+  </table>
+
+  <h3>6.3 Backend Services</h3>
+  <table>
+    <thead><tr><th>Service</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>Cloud Messaging</td><td>Push notifications & cloud relay</td></tr>
+      <tr><td>System Health Monitoring</td><td>Stability & performance tracking</td></tr>
+      <tr><td>Dynamic Configuration</td><td>Feature flags & live updates</td></tr>
+    </tbody>
+  </table>
+
+  <h3>6.4 Cloud Infrastructure</h3>
+  <div class="callout callout-blue">Secure, proprietary cloud architecture for message relay and batch processing.</div>
+</div>
+
+<!-- ==================== 7. SECURITY ==================== -->
+<div class="section" id="s7">
+  <h2 class="sec"><span class="num">7</span> Security Architecture</h2>
+  <div class="callout callout-green"><strong>Note:</strong> This section describes the security design philosophy without exposing implementation-level details.</div>
+
+  <h3>7.1 Design Principles</h3>
+  <table>
+    <thead><tr><th>#</th><th>Principle</th><th>Implementation</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Privacy by Design</td><td>No personal info required. Users get random display IDs.</td></tr>
+      <tr><td>2</td><td>Local-First Storage</td><td>All data stored exclusively on device. No central server.</td></tr>
+      <tr><td>3</td><td>Encryption in Transit</td><td>BLE/Wi-Fi messages encrypted to prevent interception.</td></tr>
+      <tr><td>4</td><td>Encryption at Rest</td><td>Local data secured via Android storage protection.</td></tr>
+      <tr><td>5</td><td>No Cloud Dependency</td><td>Fully functional offline. Cloud is optional.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>7.2 Security Features</h3>
+  <table>
+    <thead><tr><th>Feature</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Message Encryption</td><td>SHA-256 derived key encryption for all private and group chats — ensures confidentiality even over open BLE channels</td></tr>
+      <tr><td>Anonymous Identity</td><td>Random 8-character display IDs, no personal data</td></tr>
+      <tr><td>User Blocking</td><td>Block specific users from messaging</td></tr>
+      <tr><td>Content Filtering</td><td>Configurable incoming message filters</td></tr>
+      <tr><td>No Backup by Design</td><td>Prevents unauthorized data extraction</td></tr>
+      <tr><td>ProGuard Obfuscation</td><td>Code shrinking & obfuscation in release builds</td></tr>
+    </tbody>
+  </table>
+
+  <div class="arch-box">
+  <strong>Why is SOSBlue Encryption Powerful & Reliable?</strong>
+  
+  <span style="color:var(--blue);font-weight:700;">POWERFUL (SHA-256):</span>
+  SOSBlue uses <strong>SHA-256</strong> to derive unique, high-entropy 256-bit keys from your specific Chat ID and Password. This cryptographic process ensures that even if a hacker intercepts the public BLE signals, the data appears as random noise. Without the exact credentials (which are never transmitted), the message content is mathematically infeasible to decrypt.
+  
+  <span style="color:var(--green);font-weight:700;">RELIABLE (Offline):</span>
+  Security is <strong>100% Offline & Decentralized</strong>. Keys are generated locally on your device and are never sent to a cloud server. This means there is no central "Key Server" to hack, block, or shut down. Your private communications remain secure and accessible even if the entire internet collapses.
+  </div>
+
+  <h3>7.3 Permission Model</h3>
+  <table>
+    <thead><tr><th>Permission</th><th>Justification</th></tr></thead>
+    <tbody>
+      <tr><td>Bluetooth Scan/Connect/Advertise</td><td>Required for BLE mesh communication</td></tr>
+      <tr><td>Location (Fine/Coarse)</td><td>Android OS requirement for BLE scanning (not tracking)</td></tr>
+      <tr><td>Internet</td><td>Optional — cloud relay and update checks only</td></tr>
+      <tr><td>Camera</td><td>QR code scanning for contact exchange</td></tr>
+      <tr><td>Storage (Read/Write)</td><td>Saving and sharing files/media</td></tr>
+      <tr><td>Foreground Service</td><td>Persistent BLE scanning in background</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ==================== 8. COMMUNICATION PROTOCOLS ==================== -->
+<div class="section" id="s8">
+  <h2 class="sec"><span class="num">8</span> Communication Protocols</h2>
+  <h3>8.1 BLE Communication Model</h3>
+  <p>SOSBlue uses a <strong>connectionless BLE advertising/scanning</strong> model — no pairing, no connections, no handshakes. Messages are embedded directly in BLE advertisement service data packets and broadcast to all nearby devices.</p>
+  <div style="text-align:center; margin: 20px 0;">
+    <img src="https://raw.githubusercontent.com/AntorPi314/SOSBlue/main/web/images/BLE_Communication_Model.png" alt="BLE Communication Model" style="max-width:100%; border-radius:10px; border:1px solid var(--border);">
+  </div>
+
+  <h3>8.2 Message Lifecycle</h3>
+  <table>
+    <thead><tr><th>Step</th><th>Phase</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Composition</td><td>User composes message in chat interface</td></tr>
+      <tr><td>2</td><td>Compression</td><td>Payload compressed (URL 5-bit/6-bit, Unicode optimization)</td></tr>
+      <tr><td>3</td><td>Encryption</td><td>Private chats (Friend/Group) encrypted with shared key</td></tr>
+      <tr><td>4</td><td>Chunking</td><td>Data split into BLE-compatible chunks with binary headers</td></tr>
+      <tr><td>5</td><td>Advertising</td><td>Each chunk broadcast as BLE advertisement service data</td></tr>
+      <tr><td>6</td><td>Scanning</td><td>Receiver's Nordic Scanner detects and queues packets</td></tr>
+      <tr><td>7</td><td>Reassembly</td><td>MessageProcessor reassembles chunks into complete message</td></tr>
+      <tr><td>8</td><td>Decryption</td><td>Private messages decrypted with corresponding key</td></tr>
+      <tr><td>9</td><td>Display</td><td>UI updated via LiveData; message persisted in Room database</td></tr>
+      <tr><td>10</td><td>Mesh Relay</td><td>Complete messages re-broadcast for mesh range extension</td></tr>
+    </tbody>
+  </table>
+
+  <h3>8.3 Security Protocol</h3>
+  <p>SOSBlue uses a custom binary packet protocol designed for efficiency and security. Packet structures are minimized to prevent pattern analysis, and payloads are encrypted using the methods described in the Security section.</p>
+  <div class="arch-box">
+  Advanced Feature: JSON Power Links
+  ----------------------------------
+  To share rich content, host a JSON file (e.g., "https://myjson.com/1.json") 
+  and send: "g//myjson.com/1.json".
+  
+  Format:
+  {
+    "message": "Long text message...",
+    "images": [
+      {"thumb": "url...", "url": "url..."}
+    ],
+    "videos": [
+      {"length": "15:20", "url": "url..."}
+    ]
+  }
+  </div>
+
+  <h3>8.4 Cloud Relay Flow (When Online)</h3>
+  <div class="arch-box">  Device A --> Cloudflare Worker --> Firebase FCM --> Device B
+   (Sender)   (Batch Processing)   (Push Delivery)   (Receiver)
+
+   Special messages are queued and batched before cloud relay.</div>
+</div>
+
+<!-- ==================== 9. DATA MANAGEMENT ==================== -->
+<div class="section" id="s9">
+  <h2 class="sec"><span class="num">9</span> Data Management</h2>
+  <h3>9.1 Local Database (Room / SQLite)</h3>
+  <table>
+    <thead><tr><th>Entity</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>MessageEntity</td><td>All chat messages with metadata (sender, timestamp, chat type, status)</td></tr>
+      <tr><td>FriendEntity</td><td>Registered friends (display ID, nickname)</td></tr>
+      <tr><td>GroupEntity</td><td>Group metadata (group ID, name)</td></tr>
+      <tr><td>BlockedUserEntity</td><td>Blocked user list</td></tr>
+      <tr><td>AcknowledgmentEntity</td><td>Message delivery receipts</td></tr>
+      <tr><td>SavedMessageEntity</td><td>Bookmarked messages</td></tr>
+    </tbody>
+  </table>
+  <h3>9.2 Data Retention</h3>
+  <table>
+    <thead><tr><th>Data Type</th><th>Storage</th><th>Retention</th></tr></thead>
+    <tbody>
+      <tr><td>Messages</td><td>Room DB (local only)</td><td>Persistent until user clears manually</td></tr>
+      <tr><td>Files</td><td>App-internal storage</td><td>Accessible only by SOSBlue</td></tr>
+      <tr><td>Settings</td><td>SharedPreferences</td><td>Protected by Android app sandbox</td></tr>
+      <tr><td>On Uninstall</td><td>—</td><td>All data permanently deleted</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ==================== 10. COMPETITOR ANALYSIS ==================== -->
+<div class="section" id="s10">
+  <h2 class="sec"><span class="num">10</span> Competitor Analysis</h2>
+  <p style="font-size:1.05rem;font-weight:600;color:var(--blue);margin-bottom:5px;">SOSBlue vs BitChat vs Bridgefy vs Briar</p>
+
+  <h3>10.1 Overview</h3>
+  <table>
+    <thead><tr><th>App</th><th>Primary Focus</th><th>Developer</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td><strong>SOSBlue</strong></td><td>Offline communication + emergency survival</td><td>Antor Hawlader</td><td>Active (v2.5.1)</td></tr>
+      <tr><td><strong>BitChat</strong></td><td>Privacy-first mesh + Nostr protocol</td><td>Open-source community</td><td>Active (Beta)</td></tr>
+      <tr><td><strong>Bridgefy</strong></td><td>Commercial offline mesh SDK + app</td><td>Bridgefy Inc. (Mexico)</td><td>Active</td></tr>
+      <tr><td><strong>Briar</strong></td><td>Censorship-resistant secure messaging</td><td>Briar Project (Non-profit)</td><td>Active</td></tr>
+    </tbody>
+  </table>
+
+  <h3>10.2 Feature Comparison Matrix</h3>
+  <table>
+    <thead><tr><th style="min-width:180px">Feature</th><th>SOSBlue</th><th>BitChat</th><th>Bridgefy</th><th>Briar</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Offline BLE Messaging</strong></td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td></tr>
+      <tr><td><strong>Wi-Fi Support</strong></td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="no"><span class="icon-no"></span>&nbsp;No</td><td class="partial"><span class="icon-partial"></span>&nbsp;Partial</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td></tr>
+      <tr><td><strong>Mesh Relay (Multi-hop)</strong></td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td></tr>
+      <tr><td><strong>No Pairing Required</strong></td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="no"><span class="icon-no"></span>&nbsp;No</td></tr>
+      <tr><td><strong>Group Chat</strong></td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="no"><span class="icon-no"></span>&nbsp;No</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td></tr>
+      <tr><td><strong>File Sharing</strong></td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="no"><span class="icon-no"></span>&nbsp;No</td><td class="no"><span class="icon-no"></span>&nbsp;No</td><td class="no"><span class="icon-no"></span>&nbsp;No</td></tr>
+      <tr><td><strong>QR Code Contact Exchange</strong></td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="no"><span class="icon-no"></span>&nbsp;No</td><td class="no"><span class="icon-no"></span>&nbsp;No</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td></tr>
+      <tr><td><strong>Cloud Relay (Online)</strong></td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="no"><span class="icon-no"></span>&nbsp;No</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td></tr>
+      <tr><td><strong>Message Encryption</strong></td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td></tr>
+      <tr><td><strong>Survival / Emergency Tools</strong></td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="no"><span class="icon-no"></span>&nbsp;No</td><td class="no"><span class="icon-no"></span>&nbsp;No</td><td class="no"><span class="icon-no"></span>&nbsp;No</td></tr>
+      <tr><td><strong>Broadcast Mode</strong></td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="no"><span class="icon-no"></span>&nbsp;No</td></tr>
+      <tr><td><strong>Push Notifications</strong></td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="no"><span class="icon-no"></span>&nbsp;No</td><td class="no"><span class="icon-no"></span>&nbsp;No</td><td class="no"><span class="icon-no"></span>&nbsp;No</td></tr>
+      <tr><td><strong>Account Required</strong></td><td class="yes">No</td><td class="yes">No</td><td class="no">Yes</td><td class="yes">No</td></tr>
+      <tr><td><strong>Tor Integration</strong></td><td class="no"><span class="icon-no"></span>&nbsp;No</td><td class="no"><span class="icon-no"></span>&nbsp;No</td><td class="no"><span class="icon-no"></span>&nbsp;No</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td></tr>
+      <tr><td><strong>Open Source</strong></td><td class="no"><span class="icon-no"></span>&nbsp;No</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="no"><span class="icon-no"></span>&nbsp;No</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td></tr>
+      <tr><td><strong>iOS Support</strong></td><td class="no"><span class="icon-no"></span>&nbsp;No</td><td class="no"><span class="icon-no"></span>&nbsp;No</td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="no"><span class="icon-no"></span>&nbsp;No</td></tr>
+      <tr><td><strong>Remote Configuration</strong></td><td class="yes"><span class="icon-yes"></span>&nbsp;Yes</td><td class="no"><span class="icon-no"></span>&nbsp;No</td><td class="no"><span class="icon-no"></span>&nbsp;No</td><td class="no"><span class="icon-no"></span>&nbsp;No</td></tr>
+    </tbody>
+  </table>
+
+  <h3>10.3 Head-to-Head Comparisons</h3>
+
+  <h4>SOSBlue vs BitChat</h4>
+  <table>
+    <thead><tr><th>Aspect</th><th>SOSBlue</th><th>BitChat</th></tr></thead>
+    <tbody>
+      <tr><td>Architecture</td><td>BLE Advertising + Wi-Fi + Cloud (FCM)</td><td>BLE + Nostr (dual transport)</td></tr>
+      <tr><td>Online Fallback</td><td>Firebase Cloud Messaging</td><td>Nostr protocol relays</td></tr>
+      <tr><td>File Transfer</td><td>Wi-Fi TCP with compression</td><td>Text only</td></tr>
+      <tr><td>Emergency Features</td><td>Survival Bot with offline guidance</td><td>Emergency data wipe only</td></tr>
+      <tr><td>UI Style</td><td>Polished Material Design</td><td>IRC-style command interface</td></tr>
+      <tr><td>Maturity</td><td>Production (v2.5.1)</td><td>Beta with known issues</td></tr>
+    </tbody>
+  </table>
+
+  <h4>SOSBlue vs Bridgefy</h4>
+  <table>
+    <thead><tr><th>Aspect</th><th>SOSBlue</th><th>Bridgefy</th></tr></thead>
+    <tbody>
+      <tr><td>Business Model</td><td>Free</td><td>Freemium + commercial SDK</td></tr>
+      <tr><td>Platform</td><td>Android only</td><td>Android + iOS</td></tr>
+      <tr><td>File Sharing</td><td>Full media support</td><td>Text only</td></tr>
+      <tr><td>Cloud Relay</td><td>Secure Cloud Architecture</td><td>Offline only</td></tr>
+      <tr><td>SDK Available</td><td>No</td><td>Enterprise SDK available</td></tr>
+    </tbody>
+  </table>
+
+  <h4>SOSBlue vs Briar</h4>
+  <table>
+    <thead><tr><th>Aspect</th><th>SOSBlue</th><th>Briar</th></tr></thead>
+    <tbody>
+      <tr><td>Target Users</td><td>General public, responders</td><td>Activists, journalists</td></tr>
+      <tr><td>Anonymity</td><td>Pseudonymous (random IDs)</td><td>Fully anonymous (Tor)</td></tr>
+      <tr><td>Internet Routing</td><td>Secure Cloud Relay</td><td>Tor network (onion routing)</td></tr>
+      <tr><td>File Sharing</td><td>Full media support</td><td>Text + blogs only</td></tr>
+      <tr><td>Forums/Blogs</td><td>Not available</td><td>Built-in</td></tr>
+    </tbody>
+  </table>
+
+  <div class="uvp">
+    <h4>SOSBlue's Unique Value Proposition</h4>
+    <ul>
+      <li><span class="bullet">&#9670;</span> <strong>Most feature-rich</strong> — only offline mesh app combining file sharing, survival bot, cloud relay, notepad, and push notifications.</li>
+      <li><span class="bullet">&#9670;</span> <strong>Hybrid architecture</strong> — works offline and seamlessly extends reach when internet is available.</li>
+      <li><span class="bullet">&#9670;</span> <strong>Emergency-oriented</strong> — the only app with built-in disaster survival guidance (earthquake, fire, flood).</li>
+      <li><span class="bullet">&#9670;</span> <strong>Balanced approach</strong> — accessible to general users while maintaining encrypted private communications.</li>
+      <li><span class="bullet">&#9670;</span> <strong>Free & available</strong> — no commercial licensing, no SDK fees, no subscriptions.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ==================== 11. TARGET AUDIENCE ==================== -->
+<div class="section" id="s11">
+  <h2 class="sec"><span class="num">11</span> Target Audience & Use Cases</h2>
+  <h3>11.1 Primary Users</h3>
+  <table>
+    <thead><tr><th>Segment</th><th>Use Case</th></tr></thead>
+    <tbody>
+      <tr><td>Emergency Responders</td><td>Coordinate rescue operations when cell infrastructure is damaged</td></tr>
+      <tr><td>Disaster Survivors</td><td>Communicate with nearby family/friends during natural disasters</td></tr>
+      <tr><td>Travelers & Hikers</td><td>Stay connected in remote areas without cell coverage</td></tr>
+      <tr><td>Event Attendees</td><td>Communicate at crowded venues where networks are congested</td></tr>
+      <tr><td>Students & Campus</td><td>Free local messaging without mobile data</td></tr>
+    </tbody>
+  </table>
+
+  <h3>11.2 Enterprise & Institutional</h3>
+  <table>
+    <thead><tr><th>Segment</th><th>Use Case</th></tr></thead>
+    <tbody>
+      <tr><td>Military / Defense</td><td>Tactical communication without internet dependency</td></tr>
+      <tr><td>NGOs & Relief Agencies</td><td>Coordinate aid in infrastructure-damaged regions</td></tr>
+      <tr><td>Mining & Construction</td><td>Communication in underground / shielded environments</td></tr>
+      <tr><td>Maritime & Aviation</td><td>Communication beyond cellular coverage zones</td></tr>
+    </tbody>
+  </table>
+
+  <h3>11.3 How SOSBlue Works — Network Scenarios</h3>
+  <div class="callout callout-blue"><strong>Core Promise:</strong> Even if the global Internet infrastructure collapses, SOSBlue allows you to stay connected and send messages to both known and unknown users nearby.</div>
+
+  <div class="scenario">
+    <h4>Scenario 1: Global Internet Shutdown (Fully Offline)</h4>
+    <p>The entire Internet goes offline. With SOSBlue, you can still send messages to nearby users. Personal Chat and Group Chat are fully functional, with a device-to-device mesh range of <strong>15–100+ meters</strong>, allowing messages to hop through multiple devices to extend reach.</p>
+    <p><strong>Encrypted Relay:</strong> You can send encrypted messages to a specific person. Nearby users carry these messages automatically but <strong>cannot read them</strong>, ensuring privacy. Once the intended recipient's device comes within range of any carrier device, the message is automatically delivered. This feature has no range limitation — delivery depends on message propagation through nearby devices.</p>
+  </div>
+  <div class="scenario">
+    <h4>Scenario 2: You're Offline, Internet Available Globally</h4>
+    <p>Even if your device has no Internet, SOSBlue uses nearby users' devices as relays. Encrypted messages are received by nearby devices but remain <strong>unreadable to them</strong>. If any relay device has Internet, your message is forwarded to the destination within <strong>~30 seconds</strong>. If relay devices are also offline, the message is sent as soon as Internet becomes available. <strong>No message is lost.</strong></p>
+  </div>
+  <div class="scenario">
+    <h4>Scenario 3: You're Online, Recipient is Offline</h4>
+    <p>If your device is connected to the Internet but your friend's device isn't: your message is encrypted and queued on the server within <strong>~30 seconds</strong>. Once the recipient comes online, the message is delivered immediately. This allows SOSBlue to function like a traditional messenger when Internet is available.</p>
+  </div>
+
+  <h3>11.4 Additional Real-World Use Cases</h3>
+  <div class="scenario">
+    <h4>Earthquake Response</h4>
+    <p>A 7.0 earthquake strikes a city. Cell towers are damaged, internet is down. Survivors use SOSBlue to locate each other, share status, and coordinate with rescue teams through BLE mesh relay.</p>
+  </div>
+  <div class="scenario">
+    <h4>Music Festival</h4>
+    <p>A large outdoor festival overwhelms the cell network. Attendees use SOSBlue to find friends, share meeting points, and receive broadcast announcements — all without cell service.</p>
+  </div>
+  <div class="scenario">
+    <h4>Rural Community</h4>
+    <p>A remote village lacks reliable internet. Community members use SOSBlue for daily communication and file sharing through the local mesh network.</p>
+  </div>
+
+  <h3>11.5 FAQ</h3>
+  <table>
+    <thead><tr><th>Question</th><th>Answer</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Why is there a ~30s delay for cloud relay?</strong></td><td>Intentional design to reduce server load. Messages are batched before sending. Real-time cloud messaging may be added in future updates.</td></tr>
+      <tr><td><strong>Can relay carriers read my messages?</strong></td><td>No. Messages are encrypted before transmission. Carrier devices forward the data without being able to decrypt it.</td></tr>
+      <tr><td><strong>Does SOSBlue replace emergency services?</strong></td><td>No. SOSBlue is a communication tool, not a replacement for official emergency services. Always contact authorities first.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-orange"><strong>Important:</strong> Never assume the Internet will always be available. Keep SOSBlue installed — it could be essential in emergencies. Report bugs via sosblueapp@gmail.com.</div>
+</div>
+
+<!-- ==================== 12. PRIVACY ==================== -->
+<div class="section" id="s12">
+  <h2 class="sec"><span class="num">12</span> Privacy & Legal Compliance</h2>
+  <table>
+    <thead><tr><th>Aspect</th><th>Policy</th></tr></thead>
+    <tbody>
+      <tr><td>Data Collection</td><td>No personal data. No phone number, email, or real name required.</td></tr>
+      <tr><td>Data Storage</td><td>100% local on device. No cloud database stores user messages or contacts.</td></tr>
+      <tr><td>Data Sharing</td><td>No data sold to third parties. No ad network integration.</td></tr>
+      <tr><td>Location Usage</td><td>BLE scanning only (Android OS requirement). Never tracked or shared.</td></tr>
+      <tr><td>Analytics</td><td>Firebase Analytics: anonymous, aggregated only. No personal identifiers.</td></tr>
+      <tr><td>Data Deletion</td><td>Uninstalling permanently deletes all local data.</td></tr>
+      <tr><td>COPPA</td><td>Compliant — no data from users under 13.</td></tr>
+      <tr><td>GDPR</td><td>Aligned — local-only storage, minimal collection.</td></tr>
+      <tr><td>Governing Law</td><td>Bangladesh</td></tr>
+    </tbody>
+  </table>
+  <div class="callout callout-orange"><strong>Disclaimer:</strong> SOSBlue is NOT a replacement for official emergency services. In life-threatening situations, always contact official emergency services first.</div>
+</div>
+
+<!-- ==================== 13. DISTRIBUTION ==================== -->
+<div class="section" id="s13">
+  <h2 class="sec"><span class="num">13</span> Distribution & Deployment</h2>
+  <h3>13.1 Distribution Channels</h3>
+  <table>
+    <thead><tr><th>Channel</th><th>URL</th></tr></thead>
+    <tbody>
+      <tr><td>Download Portal</td><td>antorpi314.github.io/SOSBlue</td></tr>
+      <tr><td>Project Repository</td><td>github.com/AntorPi314/SOSBlue</td></tr>
+      <tr><td>Bug Reports & Support</td><td>sosblueapp@gmail.com</td></tr>
+    </tbody>
+  </table>
+
+  <h3>13.3 Social Media</h3>
+  <table>
+    <thead><tr><th>Platform</th><th>Link</th></tr></thead>
+    <tbody>
+      <tr><td>YouTube</td><td>youtube.com/@SOS-Blue</td></tr>
+      <tr><td>TikTok</td><td>tiktok.com/@sosblueapp</td></tr>
+      <tr><td>Twitter / X</td><td>x.com/sosblueapp</td></tr>
+      <tr><td>Facebook</td><td>facebook.com/sosblue</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ==================== 14. ROADMAP ==================== -->
+<div class="section" id="s14">
+  <h2 class="sec"><span class="num">14</span> Product Roadmap</h2>
+  <h3>14.1 Completed</h3>
+  <table>
+    <thead><tr><th>Milestone</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Core BLE messaging via advertising/scanning</td><td><span class="status-done">Done</span></td></tr>
+      <tr><td>Wi-Fi TCP/UDP messaging and file sharing</td><td><span class="status-done">Done</span></td></tr>
+      <tr><td>Group messaging with encrypted channels</td><td><span class="status-done">Done</span></td></tr>
+      <tr><td>Message encryption for private chats</td><td><span class="status-done">Done</span></td></tr>
+      <tr><td>QR code contact exchange</td><td><span class="status-done">Done</span></td></tr>
+      <tr><td>Survival Bot (earthquake, fire, flood)</td><td><span class="status-done">Done</span></td></tr>
+      <tr><td>Cloud Message Relay</td><td><span class="status-done">Done</span></td></tr>
+      <tr><td>Message acknowledgment & delivery receipts</td><td><span class="status-done">Done</span></td></tr>
+      <tr><td>User blocking & content filtering</td><td><span class="status-done">Done</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3>14.2 Planned Enhancements</h3>
+  <table>
+    <thead><tr><th>Priority</th><th>Feature</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><strong>High</strong></td><td>Google Play Store Launch</td><td>Publish on Play Store for wider reach</td></tr>
+      <tr><td><strong>High</strong></td><td>iOS Version</td><td>Cross-platform port for Apple devices</td></tr>
+      <tr><td><strong>Medium</strong></td><td>Voice Messages</td><td>Record and send voice clips</td></tr>
+      <tr><td><strong>Medium</strong></td><td>Map Integration</td><td>Visual mesh network map</td></tr>
+      <tr><td><strong>Medium</strong></td><td>Multi-language Support</td><td>Bengali, Hindi, Spanish localization</td></tr>
+      <tr><td><strong>Low</strong></td><td>Desktop Companion</td><td>Windows/macOS cross-device sync</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ==================== 15. CONTACT ==================== -->
+<div class="section" id="s15">
+  <h2 class="sec"><span class="num">15</span> Contact Information</h2>
+  <table>
+    <thead><tr><th>Field</th><th>Detail</th></tr></thead>
+    <tbody>
+      <tr><td>Developer</td><td>Antor Hawlader</td></tr>
+      <tr><td>Email</td><td>sosblueapp@gmail.com</td></tr>
+      <tr><td>Github Repo</td><td>github.com/AntorPi314/SOSBlue</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="doc-footer">
+  <p>This document is confidential and intended for internal review and stakeholder presentation purposes only.</p>
+  <p>&copy; 2026 SOSBlue. All rights reserved.</p>
+</div>
+
+</div>
+
+<script>
+// Smooth scroll for TOC links
+document.querySelectorAll('.toc a').forEach(a=>{
+  a.addEventListener('click',function(e){
+    e.preventDefault();
+    document.querySelector(this.getAttribute('href')).scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+</script>
+</body>
+</html>
