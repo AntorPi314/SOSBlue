@@ -15,7 +15,7 @@
 
 
 ### YouTube Channel 
-https://www.youtube.com/@SOS-Blue
+https://www.youtube.com/@SOSBlue-App
 
 **Contact Email:** sosblueapp@gmail.com
 
