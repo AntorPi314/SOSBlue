@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="SOSBlue - Offline Mesh Communication App for Android. Chat without internet using Bluetooth and WiFi Direct.">
-    <meta name="keywords" content="offline chat, mesh network, bluetooth chat, wifi direct, offline messaging">
+    <meta name="description" content="SOSBlue - Offline Mesh Communication App for Android. Chat without internet using Bluetooth and local WiFi.">
+    <meta name="keywords" content="offline chat, mesh network, bluetooth chat, local wifi chat, offline messaging">
     <meta name="author" content="Antor">
     <title>SOSBlue - Offline Mesh Communication</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,25 +18,92 @@
         }
 
         :root {
-            --bg-primary: #0a0e17;
-            --bg-secondary: #12161f;
-            --bg-card: #1a1f2e;
-            --accent-blue: #0D80E0;
-            --accent-blue-dark: #0a5db8;
-            --accent-cyan: #06b6d4;
-            --text-primary: #e4e7eb;
-            --text-secondary: #9ca3af;
-            --text-muted: #6b7280;
-            --border: #2d3748;
-            --success: #10b981;
+            --bg-void: #0b0f14;
+            --bg-primary: #0e141a;
+            --bg-secondary: #11181f;
+            --bg-card: #162029;
+            --bg-card-hover: #1c2a36;
+            --bg-glass: rgba(22, 32, 41, 0.6);
+
+            --signal: #00b4d8;
+            --signal-dim: #0077b6;
+            --signal-glow: rgba(0, 180, 216, 0.18);
+
+            --blip: #48cae4;
+            --blip-dim: #0096c7;
+            --blip-glow: rgba(72, 202, 228, 0.15);
+
+            --text-primary: #e8f0f8;
+            --text-secondary: #a0b3c9;
+            --text-muted: #5a6f86;
+
+            --border: #1e2d3a;
+            --border-strong: #2a3c4a;
+
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: var(--font-body);
             background: var(--bg-primary);
             color: var(--text-primary);
-            line-height: 1.6;
+            line-height: 1.65;
             overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(0, 180, 216, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(72, 202, 228, 0.04) 0%, transparent 50%),
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 64px 64px, 64px 64px;
+            background-position: 0 0, 0 0, -1px -1px, -1px -1px;
+            background-attachment: fixed;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse 900px 600px at 50% 0%, rgba(11, 15, 20, 0) 0%, var(--bg-primary) 75%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        ::selection {
+            background: var(--signal);
+            color: var(--bg-void);
+        }
+
+        .eyebrow {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--signal);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .eyebrow::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--signal);
+            box-shadow: 0 0 0 3px var(--signal-glow);
+            animation: pulse-dot 1.6s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.4); }
         }
 
         /* Navigation */
@@ -41,188 +111,356 @@
             position: fixed;
             top: 0;
             width: 100%;
-            background: rgba(10, 14, 23, 0.9);
-            backdrop-filter: blur(10px);
+            background: rgba(11, 15, 20, 0.85);
+            backdrop-filter: blur(18px) saturate(180%);
             border-bottom: 1px solid var(--border);
             z-index: 1000;
-            transition: all 0.3s ease;
-        }
-
-        nav.scrolled {
-            background: rgba(10, 14, 23, 0.95);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
         }
 
         .nav-container {
-            max-width: 1200px;
+            max-width: 1180px;
             margin: 0 auto;
-            padding: 1rem 2rem;
+            padding: 1.1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .logo {
-            font-size: 1.5rem;
+            font-family: var(--font-display);
+            font-size: 1.15rem;
             font-weight: 700;
-            color: var(--accent-blue);
+            color: var(--text-primary);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.65rem;
+            letter-spacing: -0.01em;
+        }
+
+        .logo img {
+            border-radius: 6px;
+            filter: drop-shadow(0 0 10px var(--signal-glow));
+        }
+
+        .logo .tag {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            color: var(--signal);
+            border: 1px solid var(--signal-dim);
+            padding: 2px 6px;
+            border-radius: 4px;
+            letter-spacing: 0.04em;
+            background: var(--signal-glow);
         }
 
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: 2.2rem;
             list-style: none;
+            align-items: center;
         }
 
         .nav-links a {
             color: var(--text-secondary);
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.3s;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--signal);
+            transition: width 0.3s ease;
         }
 
         .nav-links a:hover {
-            color: var(--accent-blue);
+            color: var(--text-primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: var(--signal);
+            color: #030b10 !important;
+            padding: 0.55rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 600 !important;
+            font-size: 0.85rem !important;
+            box-shadow: 0 0 25px var(--signal-glow);
+            transition: all 0.3s ease !important;
+        }
+
+        .nav-cta:hover {
+            background: #00d4ff;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 0 40px var(--signal-glow);
+        }
+
+        .nav-cta::after {
+            display: none !important;
         }
 
         /* Hero Section */
         .hero {
-            padding: 8rem 2rem 4rem;
-            text-align: center;
-            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(13, 128, 224, 0.15) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: float 20s infinite ease-in-out;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-30px) rotate(180deg); }
-        }
-
-        .hero-content {
-            max-width: 900px;
+            padding: 10rem 2rem 5rem;
+            max-width: 1180px;
             margin: 0 auto;
             position: relative;
             z-index: 1;
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 3rem;
+            align-items: center;
+            width: 100%;
         }
 
         .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
+            font-family: var(--font-display);
+            font-size: 3.6rem;
+            font-weight: 700;
+            line-height: 1.06;
+            letter-spacing: -0.02em;
+            margin: 1.2rem 0 1.4rem;
+            color: var(--text-primary);
+            text-shadow: 0 0 40px rgba(0, 180, 216, 0.05);
+        }
+
+        .hero h1 .accent {
+            color: var(--signal);
+            background: linear-gradient(135deg, var(--signal), #48cae4);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            line-height: 1.2;
         }
 
         .hero p {
-            font-size: 1.25rem;
+            font-size: 1.08rem;
             color: var(--text-secondary);
-            margin-bottom: 2.5rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
+            max-width: 520px;
+            margin-bottom: 2.2rem;
         }
 
         .cta-buttons {
             display: flex;
             gap: 1rem;
-            justify-content: center;
             flex-wrap: wrap;
         }
 
         .btn {
-            padding: 1rem 2.5rem;
+            padding: 0.9rem 1.7rem;
             border-radius: 12px;
-            font-size: 1rem;
+            font-size: 0.92rem;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.3s ease;
-            border: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: 1px solid transparent;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.55rem;
+            font-family: var(--font-body);
+            position: relative;
+            overflow: hidden;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-dark) 100%);
-            color: white;
-            box-shadow: 0 10px 30px rgba(13, 128, 224, 0.3);
+            background: var(--signal);
+            color: #030b10;
+            box-shadow: 0 0 30px var(--signal-glow);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            transform: scale(0);
+            transition: transform 0.5s ease;
+        }
+
+        .btn-primary:hover::before {
+            transform: scale(1);
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(13, 128, 224, 0.4);
+            background: #00d4ff;
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 0 50px var(--signal-glow);
         }
 
         .btn-secondary {
-            background: transparent;
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
             color: var(--text-primary);
-            border: 2px solid var(--border);
+            border-color: var(--border-strong);
         }
 
         .btn-secondary:hover {
-            border-color: var(--accent-blue);
-            background: rgba(13, 128, 224, 0.1);
+            border-color: var(--signal-dim);
+            color: var(--signal);
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(0, 180, 216, 0.1);
         }
 
-        /* Features Section */
+        /* Hero signal diagram */
+        .signal-panel {
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.6rem;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .signal-panel::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 20px;
+            padding: 1px;
+            background: linear-gradient(135deg, var(--signal-glow), transparent, var(--blip-glow));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .signal-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            letter-spacing: 0.04em;
+        }
+
+        .signal-panel-header .live {
+            color: var(--blip);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .signal-panel-header .live::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--blip);
+            animation: pulse-dot 1.6s infinite;
+        }
+
+        .relay-caption {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 1rem;
+            letter-spacing: 0.02em;
+        }
+
+        .relay-caption strong {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Section base */
         .section {
-            padding: 5rem 2rem;
-            max-width: 1200px;
+            padding: 6rem 2rem;
+            max-width: 1180px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         .section-header {
-            text-align: center;
-            margin-bottom: 4rem;
+            margin-bottom: 3.2rem;
+            max-width: 620px;
+        }
+
+        .section-header .eyebrow {
+            margin-bottom: 0.9rem;
         }
 
         .section-header h2 {
-            font-size: 2.5rem;
+            font-family: var(--font-display);
+            font-size: 2.2rem;
             font-weight: 700;
-            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
+            margin-bottom: 0.9rem;
             color: var(--text-primary);
+            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .section-header p {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
         }
 
+        /* Cover Image Style - SPACE REDUCED */
+        .cover-image-wrapper {
+            margin-top: -7.5rem;
+            margin-bottom: 2rem; /* কমিয়ে 2rem করা হয়েছে (আগে ছিল 3.5rem) */
+            display: flex;
+            justify-content: center;
+        }
+
+        .cover-image-wrapper img {
+            width: 100%;
+            max-width: 900px;
+            height: auto;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .cover-image-wrapper img:hover {
+            transform: scale(1.01);
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Features Section */
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            perspective: 1000px;
         }
 
         .feature-card {
-            background: var(--bg-card);
-            padding: 2.5rem 2rem;
-            border-radius: 16px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
             border: 1px solid var(--border);
-            transition: all 0.3s ease;
+            border-radius: 16px;
+            padding: 2rem 1.8rem;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             position: relative;
             overflow: hidden;
         }
@@ -232,181 +470,243 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--signal-glow), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
         }
 
         .feature-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent-blue);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transform: translateY(-8px) scale(1.01);
+            border-color: var(--signal-dim);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
 
         .feature-card:hover::before {
-            transform: scaleX(1);
+            opacity: 0.1;
+        }
+
+        .feature-index {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--signal-dim);
+            letter-spacing: 0.06em;
+            display: block;
+            margin-bottom: 1rem;
         }
 
         .feature-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, rgba(13, 128, 224, 0.2), rgba(6, 182, 212, 0.2));
+            width: 42px;
+            height: 42px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-strong);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
+            margin-bottom: 1.3rem;
+            color: var(--signal);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px var(--signal-glow);
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(-5deg);
+            border-color: var(--signal);
         }
 
         .feature-card h3 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-family: var(--font-display);
+            font-size: 1.08rem;
+            font-weight: 600;
+            margin-bottom: 0.65rem;
             color: var(--text-primary);
+            letter-spacing: -0.01em;
         }
 
         .feature-card p {
             color: var(--text-secondary);
-            line-height: 1.7;
+            line-height: 1.65;
+            font-size: 0.92rem;
         }
 
         /* Screenshots Section */
         .screenshots {
             background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
         }
 
         .screenshot-gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 1.4rem;
+            margin-top: 2.5rem;
         }
 
         .screenshot-item {
-            border-radius: 20px;
+            border-radius: 16px;
             overflow: hidden;
-            border: 2px solid var(--border);
-            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             cursor: pointer;
             position: relative;
+            aspect-ratio: 9/16;
+            background: var(--bg-card);
         }
 
         .screenshot-item:hover {
-            transform: scale(1.05);
-            border-color: var(--accent-blue);
-            box-shadow: 0 20px 50px rgba(13, 128, 224, 0.3);
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--signal-dim);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
         }
 
         .screenshot-item img {
             width: 100%;
-            height: auto;
+            height: 100%;
+            object-fit: cover;
             display: block;
         }
 
-        .screenshot-placeholder {
-            background: var(--bg-card);
-            aspect-ratio: 9/19.5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            border: 2px dashed var(--border);
-        }
-
         /* Tech Stack Section */
-        .tech-stack {
-            background: var(--bg-primary);
-        }
-
         .tech-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
             gap: 1.5rem;
-            margin-top: 3rem;
+            margin-top: 0.5rem;
         }
 
         .tech-item {
-            background: var(--bg-card);
-            padding: 1.5rem;
-            border-radius: 12px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
             border: 1px solid var(--border);
-            text-align: center;
+            border-radius: 14px;
+            padding: 1.8rem 1.5rem;
             transition: all 0.3s ease;
         }
 
         .tech-item:hover {
-            border-color: var(--accent-blue);
-            transform: translateY(-3px);
+            transform: translateY(-4px);
+            border-color: var(--blip-dim);
+            box-shadow: 0 10px 40px rgba(72, 202, 228, 0.05);
         }
 
         .tech-item h4 {
-            color: var(--text-primary);
+            font-family: var(--font-mono);
+            color: var(--blip);
             margin-bottom: 0.5rem;
-            font-size: 1.1rem;
+            font-size: 0.92rem;
+            font-weight: 500;
         }
 
         .tech-item p {
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         /* Download Section */
         .download-section {
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
             text-align: center;
         }
 
         .download-box {
-            background: var(--bg-card);
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
             border: 1px solid var(--border);
             border-radius: 20px;
-            padding: 3rem 2rem;
-            max-width: 600px;
+            padding: 4rem 2rem;
+            max-width: 620px;
             margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .download-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--signal-glow) 0%, transparent 70%);
+            pointer-events: none;
+            animation: pulse-glow 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.6; }
+            50% { transform: translateX(-50%) scale(1.2); opacity: 1; }
         }
 
         .download-box h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
+            font-family: var(--font-display);
+            font-size: 1.9rem;
+            font-weight: 700;
+            margin-bottom: 0.9rem;
+            position: relative;
         }
 
         .download-box p {
             color: var(--text-secondary);
-            margin-bottom: 2rem;
+            margin-bottom: 1.8rem;
+            position: relative;
         }
 
         .version-badge {
-            display: inline-block;
-            background: rgba(13, 128, 224, 0.2);
-            color: var(--accent-blue);
-            padding: 0.5rem 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--blip-glow);
+            color: var(--blip);
+            padding: 0.4rem 1rem;
             border-radius: 20px;
-            font-weight: 600;
-            margin-bottom: 2rem;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            margin-bottom: 1.8rem;
+            position: relative;
+            backdrop-filter: blur(4px);
+        }
+
+        .version-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--blip);
+            animation: pulse-dot 1.6s infinite;
         }
 
         /* Footer */
         footer {
             background: var(--bg-secondary);
             border-top: 1px solid var(--border);
-            padding: 3rem 2rem;
+            padding: 3.5rem 2rem 2rem;
+            position: relative;
+            z-index: 1;
         }
 
         .footer-content {
-            max-width: 1200px;
+            max-width: 1180px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 3rem;
         }
 
         .footer-section h3 {
+            font-family: var(--font-display);
             color: var(--text-primary);
             margin-bottom: 1rem;
-            font-size: 1.2rem;
+            font-size: 1.05rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .footer-section p,
@@ -414,36 +714,41 @@
             color: var(--text-secondary);
             text-decoration: none;
             display: block;
-            margin-bottom: 0.5rem;
-            transition: color 0.3s;
+            margin-bottom: 0.6rem;
+            transition: color 0.2s;
+            font-size: 0.9rem;
         }
 
         .footer-section a:hover {
-            color: var(--accent-blue);
+            color: var(--signal);
+            transform: translateX(4px);
         }
 
         .social-links {
             display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
+            gap: 0.8rem;
+            margin-top: 1.1rem;
         }
 
         .social-link {
             width: 40px;
             height: 40px;
-            background: var(--bg-card);
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
         }
 
         .social-link:hover {
-            background: var(--accent-blue);
-            border-color: var(--accent-blue);
-            transform: translateY(-3px);
+            border-color: var(--signal-dim);
+            color: var(--signal);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 180, 216, 0.1);
         }
 
         .footer-bottom {
@@ -452,34 +757,71 @@
             padding-top: 2rem;
             border-top: 1px solid var(--border);
             color: var(--text-muted);
+            font-size: 0.85rem;
+            max-width: 1180px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* Responsive */
+        @media (max-width: 900px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding-top: 8rem;
+                min-height: auto;
+            }
+        }
+
         @media (max-width: 768px) {
             .hero h1 {
-                font-size: 2.5rem;
+                font-size: 2.3rem;
             }
 
             .hero p {
-                font-size: 1.1rem;
+                font-size: 1rem;
             }
 
-            .nav-links {
+            .nav-links a:not(.nav-cta) {
                 display: none;
             }
 
             .section {
-                padding: 3rem 1.5rem;
+                padding: 4rem 1.5rem;
             }
 
             .section-header h2 {
-                font-size: 2rem;
+                font-size: 1.7rem;
+            }
+
+            .features-grid {
+                gap: 1rem;
+            }
+
+            .tech-grid {
+                gap: 1rem;
             }
         }
 
-        /* Smooth scroll */
-        html {
-            scroll-behavior: smooth;
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
+        /* Scroll reveal animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
@@ -488,144 +830,285 @@
     <nav id="navbar">
         <div class="nav-container">
             <div class="logo">
-    <img src="images/sosblue_icon.png" width="32" height="32" style="border-radius:8px; vertical-align:middle; margin-right:8px;">
-    SOSBlue
-</div>
+                <img src="images/sosblue_icon.png" width="30" height="30" alt="">
+                SOSBlue
+                <span class="tag">MESH</span>
+            </div>
 
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
                 <li><a href="#screenshots">Screenshots</a></li>
                 <li><a href="#tech">Technology</a></li>
-                <li><a href="#download">Download</a></li>
+                <li><a href="https://github.com/AntorPi314/SOSBlue/releases/download/SOSBlue_v2.5.2_Dataset/SOSBlue_v2.5.2_Dataset.apk" class="nav-cta">Download</a></li>
             </ul>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section class="hero">
-        <div class="hero-content">
-            <h1>Communicate Without Limits</h1>
-            <p>Stay connected even when the internet fails. SOSBlue enables secure, offline mesh networking through Bluetooth and WiFi Direct.</p>
-            <div class="cta-buttons">
-                <a href="https://github.com/AntorPi314/SOSBlue/releases/latest" class="btn btn-primary">
-                    <span>Download Now</span>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-                    </svg>
-                </a>
-                <a href="https://github.com/AntorPi314/SOSBlue" class="btn btn-secondary">
-                    <span>View on GitHub</span>
-                </a>
+        <div class="hero-grid">
+            <div>
+                <span class="eyebrow">No signal required</span>
+                <h1>Communicate<br>without <span class="accent">limits</span></h1>
+                <p>Stay connected even when the internet fails. SOSBlue relays messages device-to-device over Bluetooth LE and local WiFi, hopping through nearby phones to extend your reach, and using the internet too whenever it's available, plus a built-in offline survival assistant when you need it most.</p>
+                <div class="cta-buttons">
+                    <a href="https://github.com/AntorPi314/SOSBlue/releases/download/SOSBlue_v2.5.2_Dataset/SOSBlue_v2.5.2_Dataset.apk" class="btn btn-primary">
+                        <span>Download APK</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                        </svg>
+                    </a>
+                    <a href="https://github.com/AntorPi314/SOSBlue" class="btn btn-secondary">
+                        <span>View on GitHub</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="signal-panel">
+                <div class="signal-panel-header">
+                    <span>RELAY_TRACE.log</span>
+                    <span class="live">live</span>
+                </div>
+                <svg width="100%" viewBox="0 0 460 260" role="img" aria-label="Diagram showing a message hopping from one phone through two nearby relay devices to reach its destination">
+                    <defs>
+                        <marker id="hop-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M2 1L8 5L2 9" fill="none" stroke="#0077b6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </marker>
+                    </defs>
+
+                    <line x1="70" y1="130" x2="230" y2="70" stroke="#2a3c4a" stroke-width="1.5" marker-end="url(#hop-arrow)"/>
+                    <line x1="230" y1="70" x2="390" y2="130" stroke="#2a3c4a" stroke-width="1.5" marker-end="url(#hop-arrow)"/>
+                    <line x1="70" y1="130" x2="230" y2="190" stroke="#2a3c4a" stroke-width="1" stroke-dasharray="3 4" opacity="0.5"/>
+                    <line x1="230" y1="190" x2="390" y2="130" stroke="#2a3c4a" stroke-width="1" stroke-dasharray="3 4" opacity="0.5"/>
+
+                    <circle id="pulse" r="4" fill="#00b4d8">
+                        <animateMotion dur="3s" repeatCount="indefinite" path="M70,130 L230,70 L390,130"/>
+                    </circle>
+                    <circle r="10" fill="none" stroke="#00b4d8" stroke-width="1" opacity="0">
+                        <animateMotion dur="3s" repeatCount="indefinite" path="M70,130 L230,70 L390,130"/>
+                        <animate attributeName="opacity" values="0;0.5;0" dur="3s" repeatCount="indefinite"/>
+                        <animate attributeName="r" values="4;16;4" dur="3s" repeatCount="indefinite"/>
+                    </circle>
+
+                    <circle cx="70" cy="130" r="26" fill="#162029" stroke="#2a3c4a" stroke-width="1"/>
+                    <circle cx="70" cy="130" r="6" fill="#48cae4"/>
+                    <text x="70" y="172" text-anchor="middle" fill="#a0b3c9" font-family="JetBrains Mono, monospace" font-size="11">YOU</text>
+
+                    <circle cx="230" cy="70" r="24" fill="#162029" stroke="#2a3c4a" stroke-width="1"/>
+                    <circle cx="230" cy="70" r="5" fill="#5a6f86"/>
+                    <text x="230" y="34" text-anchor="middle" fill="#a0b3c9" font-family="JetBrains Mono, monospace" font-size="11">HOP 1</text>
+
+                    <circle cx="390" cy="130" r="26" fill="#162029" stroke="#2a3c4a" stroke-width="1"/>
+                    <circle cx="390" cy="130" r="6" fill="#48cae4"/>
+                    <text x="390" y="172" text-anchor="middle" fill="#a0b3c9" font-family="JetBrains Mono, monospace" font-size="11">FRIEND</text>
+
+                    <circle cx="230" cy="190" r="20" fill="#162029" stroke="#1e2d3a" stroke-width="1" opacity="0.5"/>
+                    <text x="230" y="225" text-anchor="middle" fill="#5a6f86" font-family="JetBrains Mono, monospace" font-size="10" opacity="0.6">no signal path</text>
+                </svg>
+                <p class="relay-caption">Message stored on-device until a neighbor relays it <strong>closer to its destination</strong></p>
             </div>
         </div>
     </section>
 
     <!-- Features Section -->
     <section id="features" class="section">
+        
+        <!-- Cover Image Added Here -->
+        <div class="cover-image-wrapper reveal">
+            <img src="images/cover_image.png" alt="SOSBlue App Interface Cover">
+        </div>
+
         <div class="section-header">
-            <h2>Powerful Features</h2>
-            <p>Built for resilience, privacy, and real-world connectivity challenges</p>
+            <span class="eyebrow">What it does</span>
+            <h2>Built for when the network is gone</h2>
+            <p>Every feature here runs without a cell tower, a router, or a subscription.</p>
         </div>
         <div class="features-grid">
-            <div class="feature-card">
+            <div class="feature-card reveal">
+                <span class="feature-index">01</span>
                 <div class="feature-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
                         <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
                         <line x1="6" y1="6" x2="6.01" y2="6"></line>
                         <line x1="6" y1="18" x2="6.01" y2="18"></line>
                     </svg>
                 </div>
-                <h3>Offline Mesh Network</h3>
-                <p>Create a resilient communication network without internet or cellular connection using Bluetooth LE and WiFi Direct technology.</p>
+                <h3>Offline mesh network</h3>
+                <p>Create a resilient communication network without needing cellular data, using Bluetooth LE and local WiFi to reach nearby devices.</p>
             </div>
 
-            <div class="feature-card">
+            <div class="feature-card reveal">
+                <span class="feature-index">02</span>
                 <div class="feature-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
                 </div>
-                <h3>End-to-End Encryption</h3>
-                <p>All messages are encrypted using AES-256 encryption. Your conversations remain private and secure.</p>
+                <h3>Encrypted chats</h3>
+                <p>Friend and group conversations are encrypted with a shared key that only your contacts have, so casual snooping on the wire isn't possible.</p>
             </div>
 
-            <div class="feature-card">
+            <div class="feature-card reveal">
+                <span class="feature-index">03</span>
                 <div class="feature-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"></circle>
                         <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
                 </div>
-                <h3>Real-Time Messaging</h3>
+                <h3>Real-time messaging</h3>
                 <p>Send and receive messages instantly over Bluetooth and WiFi. Automatic message reassembly for large data transfers.</p>
             </div>
 
-            <div class="feature-card">
+            <div class="feature-card reveal">
+                <span class="feature-index">04</span>
                 <div class="feature-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                         <circle cx="9" cy="7" r="4"></circle>
                         <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                         <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                     </svg>
                 </div>
-                <h3>Group Messaging</h3>
+                <h3>Group messaging</h3>
                 <p>Create encrypted group chats with custom group IDs. Support for both friend-to-friend and group conversations.</p>
             </div>
 
-            <div class="feature-card">
+            <div class="feature-card reveal">
+                <span class="feature-index">05</span>
                 <div class="feature-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                     </svg>
                 </div>
-                <h3>Message Acknowledgment</h3>
+                <h3>Message acknowledgment</h3>
                 <p>Know when your messages are delivered and read. Built-in acknowledgment system with receipt tracking.</p>
             </div>
 
-            <div class="feature-card">
+            <div class="feature-card reveal">
+                <span class="feature-index">06</span>
                 <div class="feature-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                         <line x1="9" y1="9" x2="15" y2="15"></line>
                         <line x1="15" y1="9" x2="9" y2="15"></line>
                     </svg>
                 </div>
-                <h3>No Tracking</h3>
-                <p>Completely offline and privacy-focused. No phone number, no email required. No data collection or analytics.</p>
+                <h3>No account needed</h3>
+                <p>No phone number, no email, no sign-up. You get a device ID automatically and can start chatting right away.</p>
             </div>
 
-            <div class="feature-card">
+            <div class="feature-card reveal">
+                <span class="feature-index">07</span>
                 <div class="feature-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
                     </svg>
                 </div>
-                <h3>Message Mesh Relay</h3>
-                <p>Messages automatically relay through nearby devices, extending communication range beyond direct Bluetooth/WiFi limits.</p>
+                <h3>Store & forward relay</h3>
+                <p>If your friend isn't nearby, SOSBlue holds your message on-device and automatically forwards it once a neighboring phone relays it closer — hopping from device to device to extend range far beyond a single Bluetooth link. If any device along the way gets internet access, it can also deliver the message that way, so it arrives however possible.</p>
             </div>
 
-            <div class="feature-card">
+            <div class="feature-card reveal">
+                <span class="feature-index">08</span>
                 <div class="feature-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                     </svg>
                 </div>
-                <h3>QR Code Sharing</h3>
+                <h3>QR code sharing</h3>
                 <p>Quickly add friends by scanning QR codes. Share your user ID and encryption keys securely without manual entry.</p>
             </div>
 
-            <div class="feature-card">
+            <div class="feature-card reveal">
+                <span class="feature-index">09</span>
                 <div class="feature-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="3"></circle>
                         <path d="M12 1v6m0 6v6m5.66-13.66l-4.24 4.24m0 6.84l4.24 4.24M1 12h6m6 0h6M3.34 3.34l4.24 4.24m6.84 0l4.24-4.24M3.34 20.66l4.24-4.24m6.84 0l4.24 4.24"></path>
                     </svg>
                 </div>
-                <h3>Hybrid Protocol</h3>
-                <p>Seamless switching between Bluetooth LE for low power and WiFi Direct for high-speed data transfer.</p>
+                <h3>Hybrid protocol</h3>
+                <p>Uses Bluetooth LE for low-power chat and switches to local WiFi for faster file transfers when devices share the same network.</p>
+            </div>
+
+            <div class="feature-card reveal">
+                <span class="feature-index">10</span>
+                <div class="feature-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"></path>
+                        <circle cx="9" cy="13" r="1"></circle>
+                        <circle cx="15" cy="13" r="1"></circle>
+                    </svg>
+                </div>
+                <h3>Offline survival bot</h3>
+                <p>A built-in assistant with emergency guidance for situations like fires, floods, and earthquakes — works entirely from a local knowledge base, no internet or signal required.</p>
+            </div>
+
+            <div class="feature-card reveal">
+                <span class="feature-index">11</span>
+                <div class="feature-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                </div>
+                <h3>Media gallery in chat</h3>
+                <p>View shared photos and videos right inside the conversation, with a dedicated gallery view for browsing everything a chat or group has shared.</p>
+            </div>
+
+            <div class="feature-card reveal">
+                <span class="feature-index">12</span>
+                <div class="feature-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                    </svg>
+                </div>
+                <h3>Personal file sharing</h3>
+                <p>Pick any files from your device and share them from a local server that nearby devices on the same WiFi network can browse and download, no cables or cloud upload needed.</p>
+            </div>
+
+            <div class="feature-card reveal">
+                <span class="feature-index">13</span>
+                <div class="feature-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                </div>
+                <h3>Multilingual smart filter</h3>
+                <p>Built-in content filtering recognizes harmful language across 15 languages, including Bangla, Hindi, Arabic, and more — and catches common tricks like repeated letters or symbol swaps used to slip past filters.</p>
+            </div>
+
+            <div class="feature-card reveal">
+                <span class="feature-index">14</span>
+                <div class="feature-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                </div>
+                <h3>Built-in offline notepad</h3>
+                <p>A full text editor baked right into the app — undo/redo, find & replace, and auto-save — so you can jot down notes even with zero connectivity.</p>
+            </div>
+
+            <div class="feature-card reveal">
+                <span class="feature-index">15</span>
+                <div class="feature-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                    </svg>
+                </div>
+                <h3>Self-healing connection</h3>
+                <p>A background watchdog checks on the messaging service and automatically restarts it if the system kills it, so you stay reachable without having to reopen the app.</p>
             </div>
         </div>
     </section>
@@ -633,65 +1116,68 @@
     <!-- Screenshots Section -->
     <section id="screenshots" class="section screenshots">
         <div class="section-header">
-            <h2>App Screenshots</h2>
-            <p>A glimpse into the SOSBlue interface and features</p>
+            <span class="eyebrow">Inside the app</span>
+            <h2>App screenshots</h2>
+            <p>A glimpse into the SOSBlue interface and features.</p>
         </div>
         <div class="screenshot-gallery">
-                <div class="screenshot-item">
-        <img src="images/screenshot_1.png" alt="Screenshot 1">
-    </div>
-    <div class="screenshot-item">
-        <img src="images/screenshot_2.png" alt="Screenshot 2">
-    </div>
-    <div class="screenshot-item">
-        <img src="images/screenshot_3.png" alt="Screenshot 3">
-    </div>
-    <div class="screenshot-item">
-        <img src="images/screenshot_4.png" alt="Screenshot 4">
-    </div>
-    <div class="screenshot-item">
-        <img src="images/screenshot_5.png" alt="Screenshot 5">
-    </div>
-    <div class="screenshot-item">
-        <img src="images/screenshot_6.png" alt="Screenshot 6">
-    </div>
-    <div class="screenshot-item">
-        <img src="images/screenshot_7.png" alt="Screenshot 7">
-    </div>
-    <div class="screenshot-item">
-        <img src="images/screenshot_8.png" alt="Screenshot 8">
-    </div>
+            <div class="screenshot-item reveal">
+                <img src="images/screenshot_1.png" alt="Screenshot 1">
+            </div>
+            <div class="screenshot-item reveal">
+                <img src="images/screenshot_2.png" alt="Screenshot 2">
+            </div>
+            <div class="screenshot-item reveal">
+                <img src="images/screenshot_3.png" alt="Screenshot 3">
+            </div>
+            <div class="screenshot-item reveal">
+                <img src="images/screenshot_4.png" alt="Screenshot 4">
+            </div>
+            <div class="screenshot-item reveal">
+                <img src="images/screenshot_5.png" alt="Screenshot 5">
+            </div>
+            <div class="screenshot-item reveal">
+                <img src="images/screenshot_6.png" alt="Screenshot 6">
+            </div>
+            <div class="screenshot-item reveal">
+                <img src="images/screenshot_7.png" alt="Screenshot 7">
+            </div>
+            <div class="screenshot-item reveal">
+                <img src="images/screenshot_8.png" alt="Screenshot 8">
+            </div>
+        </div>
     </section>
 
     <!-- Technology Section -->
     <section id="tech" class="section tech-stack">
         <div class="section-header">
-            <h2>Built With Modern Technology</h2>
-            <p>Leveraging cutting-edge protocols and robust architecture</p>
+            <span class="eyebrow">Under the hood</span>
+            <h2>Built with modern technology</h2>
+            <p>Leveraging local-first protocols and a robust Android architecture.</p>
         </div>
         <div class="tech-grid">
-            <div class="tech-item">
+            <div class="tech-item reveal">
                 <h4>Bluetooth LE</h4>
                 <p>Low-energy wireless communication</p>
             </div>
-            <div class="tech-item">
-                <h4>WiFi Direct</h4>
-                <p>High-speed peer-to-peer networking</p>
+            <div class="tech-item reveal">
+                <h4>Local WiFi transfer</h4>
+                <p>Fast file sharing over the same network</p>
             </div>
-            <div class="tech-item">
-                <h4>AES-256</h4>
-                <p>Military-grade encryption</p>
+            <div class="tech-item reveal">
+                <h4>Key-based encryption</h4>
+                <p>Shared-key encryption for friend & group chats</p>
             </div>
-            <div class="tech-item">
-                <h4>Room Database</h4>
+            <div class="tech-item reveal">
+                <h4>Room database</h4>
                 <p>Efficient local data persistence</p>
             </div>
-            <div class="tech-item">
+            <div class="tech-item reveal">
                 <h4>Android SDK</h4>
                 <p>Native Android development</p>
             </div>
-            <div class="tech-item">
-                <h4>Material Design</h4>
+            <div class="tech-item reveal">
+                <h4>Material design</h4>
                 <p>Modern UI/UX principles</p>
             </div>
         </div>
@@ -699,13 +1185,13 @@
 
     <!-- Download Section -->
     <section id="download" class="section download-section">
-        <div class="download-box">
-            <h2>Ready to Get Started?</h2>
-            <p>Download SOSBlue now and experience truly offline communication</p>
-            <div class="version-badge">Latest Version</div>
-            <a href="https://github.com/AntorPi314/SOSBlue/releases/latest" class="btn btn-primary" style="display: inline-flex;">
+        <div class="download-box reveal">
+            <div class="version-badge">Latest version</div>
+            <h2>Ready to get started?</h2>
+            <p>Download SOSBlue now and experience truly offline communication.</p>
+            <a href="https://github.com/AntorPi314/SOSBlue/releases/download/SOSBlue_v2.5.2_Dataset/SOSBlue_v2.5.2_Dataset.apk" class="btn btn-primary" style="display: inline-flex; position: relative;">
                 <span>Download APK</span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
                 </svg>
             </a>
@@ -720,17 +1206,17 @@
                 <p>Offline mesh communication for Android. Stay connected when it matters most.</p>
                 <div class="social-links">
                     <a href="https://github.com/AntorPi314/SOSBlue" class="social-link" title="GitHub">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
                         </svg>
                     </a>
                     <a href="https://www.youtube.com/@SOS-Blue" class="social-link" title="YouTube">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
                         </svg>
                     </a>
                     <a href="https://www.facebook.com/sosblue" class="social-link" title="Facebook">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                         </svg>
                     </a>
@@ -739,9 +1225,9 @@
 
             <div class="footer-section">
                 <h3>Resources</h3>
-                <a href="https://github.com/AntorPi314/SOSBlue">Source Code</a>
+                <a href="https://github.com/AntorPi314/SOSBlue">Source code</a>
                 <a href="https://github.com/AntorPi314/SOSBlue/releases">Releases</a>
-                <a href="https://github.com/AntorPi314/SOSBlue/issues">Report Issues</a>
+                <a href="https://github.com/AntorPi314/SOSBlue/issues">Report issues</a>
                 <a href="https://github.com/AntorPi314/SOSBlue/blob/main/LICENSE">License</a>
             </div>
 
@@ -749,26 +1235,44 @@
                 <h3>Requirements</h3>
                 <p>Android 8.0 (API 26) or higher</p>
                 <p>Bluetooth 4.0+ support</p>
-                <p>WiFi Direct capability</p>
+                <p>WiFi (for local network file transfer)</p>
                 <p>Location permission (Android requirement for BLE scanning)</p>
             </div>
         </div>
 
         <div class="footer-bottom">
-            <p>&copy; 2025 SOSBlue. Open Source Project. Built by Antor.</p>
+            <p>&copy; 2025 SOSBlue. Open source project. Built by Antor.</p>
         </div>
     </footer>
 
     <script>
-        // Navbar scroll effect
+        // Navbar background on scroll
         window.addEventListener('scroll', () => {
             const navbar = document.getElementById('navbar');
             if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
+                navbar.style.background = 'rgba(11, 15, 20, 0.95)';
+                navbar.style.backdropFilter = 'blur(20px) saturate(200%)';
             } else {
-                navbar.classList.remove('scrolled');
+                navbar.style.background = 'rgba(11, 15, 20, 0.85)';
+                navbar.style.backdropFilter = 'blur(18px) saturate(180%)';
             }
         });
+
+        // Scroll reveal animation
+        const revealElements = document.querySelectorAll('.reveal');
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        revealElements.forEach(el => revealObserver.observe(el));
     </script>
 </body>
 </html>
