@@ -10,8 +10,8 @@ android {
         applicationId "com.antor.sosblue"
         minSdk 26
         targetSdk 36
-        versionCode 252
-        versionName "2.5.2"
+        versionCode 255
+        versionName "2.5.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
