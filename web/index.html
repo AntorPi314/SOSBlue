@@ -544,6 +544,7 @@
             grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
             gap: 1.4rem;
             margin-top: 2.5rem;
+            align-items: start;
         }
 
         .screenshot-item {
@@ -553,7 +554,6 @@
             transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             cursor: pointer;
             position: relative;
-            aspect-ratio: 9/16;
             background: var(--bg-card);
         }
 
@@ -565,8 +565,7 @@
 
         .screenshot-item img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: auto;
             display: block;
         }
 
@@ -830,7 +829,7 @@
     <nav id="navbar">
         <div class="nav-container">
             <div class="logo">
-                <img src="images/sosblue_icon.png" width="30" height="30" alt="">
+                <img src="web/images/sosblue_icon.png" width="30" height="30" alt="">
                 SOSBlue
                 <span class="tag">MESH</span>
             </div>
@@ -839,7 +838,7 @@
                 <li><a href="#features">Features</a></li>
                 <li><a href="#screenshots">Screenshots</a></li>
                 <li><a href="#tech">Technology</a></li>
-                <li><a href="https://github.com/AntorPi314/SOSBlue/releases/download/SOSBlue_v2.5.2_Dataset/SOSBlue_v2.5.2_Dataset.apk" class="nav-cta">Download</a></li>
+                <li><a href="https://github.com/AntorPi314/SOSBlue/releases/download/SOSBlue_v2.5.5/SOSBlue_v2.5.5.apk" class="nav-cta">Download</a></li>
             </ul>
         </div>
     </nav>
@@ -852,7 +851,7 @@
                 <h1>Communicate<br>without <span class="accent">limits</span></h1>
                 <p>Stay connected even when the internet fails. SOSBlue relays messages device-to-device over Bluetooth LE and local WiFi, hopping through nearby phones to extend your reach, and using the internet too whenever it's available, plus a built-in offline survival assistant when you need it most.</p>
                 <div class="cta-buttons">
-                    <a href="https://github.com/AntorPi314/SOSBlue/releases/download/SOSBlue_v2.5.2_Dataset/SOSBlue_v2.5.2_Dataset.apk" class="btn btn-primary">
+                    <a href="https://github.com/AntorPi314/SOSBlue/releases/download/SOSBlue_v2.5.5/SOSBlue_v2.5.5.apk" class="btn btn-primary">
                         <span>Download APK</span>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
@@ -915,7 +914,7 @@
         
         <!-- Cover Image Added Here -->
         <div class="cover-image-wrapper reveal">
-            <img src="images/cover_image.png" alt="SOSBlue App Interface Cover">
+            <img src="web/images/cover_image.png" alt="SOSBlue App Interface Cover">
         </div>
 
         <div class="section-header">
@@ -1122,28 +1121,28 @@
         </div>
         <div class="screenshot-gallery">
             <div class="screenshot-item reveal">
-                <img src="images/screenshot_1.png" alt="Screenshot 1">
+                <img src="web/images/screenshot_1.png" alt="Screenshot 1">
             </div>
             <div class="screenshot-item reveal">
-                <img src="images/screenshot_2.png" alt="Screenshot 2">
+                <img src="web/images/screenshot_2.png" alt="Screenshot 2">
             </div>
             <div class="screenshot-item reveal">
-                <img src="images/screenshot_3.png" alt="Screenshot 3">
+                <img src="web/images/screenshot_3.png" alt="Screenshot 3">
             </div>
             <div class="screenshot-item reveal">
-                <img src="images/screenshot_4.png" alt="Screenshot 4">
+                <img src="web/images/screenshot_4.png" alt="Screenshot 4">
             </div>
             <div class="screenshot-item reveal">
-                <img src="images/screenshot_5.png" alt="Screenshot 5">
+                <img src="web/images/screenshot_5.png" alt="Screenshot 5">
             </div>
             <div class="screenshot-item reveal">
-                <img src="images/screenshot_6.png" alt="Screenshot 6">
+                <img src="web/images/screenshot_6.png" alt="Screenshot 6">
             </div>
             <div class="screenshot-item reveal">
-                <img src="images/screenshot_7.png" alt="Screenshot 7">
+                <img src="web/images/screenshot_7.png" alt="Screenshot 7">
             </div>
             <div class="screenshot-item reveal">
-                <img src="images/screenshot_8.png" alt="Screenshot 8">
+                <img src="web/images/screenshot_8.png" alt="Screenshot 8">
             </div>
         </div>
     </section>
@@ -1189,7 +1188,7 @@
             <div class="version-badge">Latest version</div>
             <h2>Ready to get started?</h2>
             <p>Download SOSBlue now and experience truly offline communication.</p>
-            <a href="https://github.com/AntorPi314/SOSBlue/releases/download/SOSBlue_v2.5.2_Dataset/SOSBlue_v2.5.2_Dataset.apk" class="btn btn-primary" style="display: inline-flex; position: relative;">
+            <a href="https://github.com/AntorPi314/SOSBlue/releases/download/SOSBlue_v2.5.5/SOSBlue_v2.5.5.apk" class="btn btn-primary" style="display: inline-flex; position: relative;">
                 <span>Download APK</span>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
@@ -1241,7 +1240,7 @@
         </div>
 
         <div class="footer-bottom">
-            <p>&copy; 2025 SOSBlue. Open source project. Built by Antor.</p>
+            <p>&copy; 2025 SOSBlue. Built by Antor.</p>
         </div>
     </footer>
 

@@ -52,12 +52,12 @@
 
 <div class="container">
     <h1>Privacy Policy</h1>
-    <p><strong>Last Updated:</strong> January 2026</p>
+    <p><strong>Last Updated:</strong> July 2026</p>
 
     <p>This Privacy Policy describes how <strong>SOSBlue</strong> ("we", "us", or "our") handles your information when you use our mobile application. We are committed to protecting your privacy.</p>
 
     <div class="highlight">
-        <strong>Key Point:</strong> SOSBlue is primarily an offline, peer-to-peer communication tool. We do not store your messages, files, or personal data on any external servers. All data remains locally on your device or is transmitted directly to nearby devices via Bluetooth/Wi-Fi.
+        <strong>Key Point:</strong> SOSBlue is primarily an offline, peer-to-peer communication tool. Your day-to-day chats, files, and messages stay on your device or go directly to nearby devices via Bluetooth/Wi-Fi &mdash; they are not stored on our servers. A few specific features described below (Cloud Relay for special messages, the online Survival Bot, and anonymous usage analytics) do use internet-connected services; these are explained in detail in this policy.
     </div>
 
     <h2>1. Information We Collect and Use</h2>
@@ -67,6 +67,7 @@
     <ul>
         <li><strong>Why we need it:</strong> The Android operating system requires Location permissions to scan for nearby Bluetooth Low Energy (BLE) and Wi-Fi Direct devices. Without this permission, the app cannot find nearby friends to chat with.</li>
         <li><strong>Background Usage:</strong> If you enable "Keep Service Alive" or background scanning features, the app may scan for devices while the app is in the background to alert you of nearby connections.</li>
+        <li><strong>Approximate location for analytics:</strong> Separately from GPS/precise location, our analytics (see Section 4) records a coarse, IP-based country/city and your device time zone. This is not derived from GPS and is used only in aggregate to understand where the app is used.</li>
     </ul>
 
     <h3>b. Storage and Media Files</h3>
@@ -79,29 +80,39 @@
     <p>The core functionality of SOSBlue relies on Bluetooth and Wi-Fi hardware to establish peer-to-peer connections. We use these radios to transmit encrypted messages locally.</p>
 
     <h2>2. Data Storage and Retention</h2>
-    <p>All messages, logs, and shared files are stored <strong>locally inside your device's internal database</strong> (SQLite/Room Database). We do not have a central cloud server. If you uninstall the app or clear the app data, your chat history and settings will be permanently deleted.</p>
+    <p>All regular messages, logs, and shared files are stored <strong>locally inside your device's internal database</strong> (SQLite/Room Database). If you uninstall the app or clear the app data, your chat history and settings will be permanently deleted.</p>
+    <p><strong>Cloud Relay (Special Messages):</strong> For certain special/priority messages that cannot be delivered directly over Bluetooth or Wi-Fi (for example, when the recipient is out of range), SOSBlue may relay the message through our own cloud backend so it can still reach the recipient. This relay is used only for the specific message being sent, is only used when this feature applies, and is not a general chat backup &mdash; your regular day-to-day conversations are not uploaded.</p>
 
     <h2>3. Survival Bot & Automated Messages</h2>
-    <p>The app includes a "Survival Bot" or automated helper. Interactions with this bot are processed locally on your device. No query data is sent to the internet.</p>
+    <p>SOSBlue's Survival Bot works in two ways depending on your connection:</p>
+    <ul>
+        <li><strong>Offline mode:</strong> When you have no internet connection, the bot answers using a built-in local knowledge base (fire, flood, earthquake, first aid, and similar survival topics). This works entirely on your device and nothing is sent anywhere.</li>
+        <li><strong>Online mode:</strong> When your device has an internet connection, the bot uses a third-party AI service (Groq) to generate more detailed, conversational answers to your survival/emergency questions. In this mode, your typed question (and a short amount of recent conversation context needed to understand it) is sent to Groq's servers to generate a reply.</li>
+    </ul>
+    <p><strong>We do not save or store your Survival Bot conversations on our servers.</strong> Each question is processed only to generate that reply and is not retained by us afterward. Please avoid including sensitive personal information you wouldn't want processed by a third-party AI service when chatting with the online bot.</p>
 
-    <h2>4. Data Sharing and Third Parties</h2>
-    <p>Since SOSBlue operates offline:</p>
+    <h2>4. Analytics and Diagnostics</h2>
+    <p>To help us understand app performance and improve reliability (for example, message delivery success, connection range, and battery impact), SOSBlue collects anonymous, aggregated usage analytics and sends them to our analytics backend (Firebase). This can include information such as: message delivery metadata (size, delivery time, signal strength, hop count), general device information (manufacturer, model, Android version, battery status), approximate country/city and time zone, and app version. This data is used solely to improve the app and is not linked to the actual content of your messages.</p>
+
+    <h2>5. Data Sharing and Third Parties</h2>
+    <p>Since SOSBlue is primarily an offline app:</p>
     <ul>
         <li>We do not sell your data to third parties.</li>
-        <li>We do not upload your chats to any cloud service.</li>
-        <li>Your data is only shared with the specific nearby devices you choose to connect with.</li>
+        <li>We do not upload or store your regular chat history on any cloud service.</li>
+        <li>Your day-to-day chat data is only shared with the specific nearby devices you choose to connect with.</li>
+        <li>As described above, limited data is shared with Firebase (analytics), Groq (only when you use the online Survival Bot), and our own cloud relay backend (only for special messages that require it).</li>
     </ul>
 
-    <h2>5. Security</h2>
+    <h2>6. Security</h2>
     <p>We implement standard encryption logic for data stored locally and during transmission between devices. However, please note that no method of electronic transmission is 100% secure. We recommend verifying the identity of the person you are connecting with.</p>
 
-    <h2>6. Children’s Privacy</h2>
+    <h2>7. Children’s Privacy</h2>
     <p>Our Service does not address anyone under the age of 13. We do not knowingly collect personally identifiable information from children under 13.</p>
 
-    <h2>7. Changes to This Privacy Policy</h2>
+    <h2>8. Changes to This Privacy Policy</h2>
     <p>We may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. We will notify you of any changes by posting the new Privacy Policy on this page.</p>
 
-    <h2>8. Contact Us</h2>
+    <h2>9. Contact Us</h2>
     <p>If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us at:</p>
     <p><strong>Email:</strong> sosblueapp@gmail.com<br>
     <strong>Developer:</strong> Antor</p>
